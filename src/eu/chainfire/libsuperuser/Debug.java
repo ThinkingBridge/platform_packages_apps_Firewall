@@ -16,7 +16,7 @@
 
 package eu.chainfire.libsuperuser;
 
-import com.jtschohl.androidfirewall.BuildConfig;
+import org.chameleonos.firewall.BuildConfig;
 
 import android.util.Log;
 

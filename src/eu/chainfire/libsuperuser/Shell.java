@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.jtschohl.androidfirewall.BuildConfig;
+import org.chameleonos.firewall.BuildConfig;
 
 import android.os.Looper;
 

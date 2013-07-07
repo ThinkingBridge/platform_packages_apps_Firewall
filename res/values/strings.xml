@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Android Firewall</string>
-    <string name="title_enabled">Android Firewall (Enabled)</string>
-    <string name="title_disabled">Android Firewall (Disabled)</string>
+    <string name="app_name">Firewall</string>
+    <string name="title_enabled">Firewall (Enabled)</string>
+    <string name="title_disabled">Firewall (Disabled)</string>
     <string name="showrules">Show rules</string>
     <string name="applyrules">Apply rules</string>
     <string name="saverules">Save rules</string>

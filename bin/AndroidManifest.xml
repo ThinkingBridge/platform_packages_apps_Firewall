@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.jtschohl.androidfirewall"
+    package="org.chameleonos.firewall"
     android:installLocation="internalOnly"
     android:versionCode="225"
     android:versionName="2.2.5" >
 
     <uses-sdk
-        android:minSdkVersion="8"
+        android:minSdkVersion="17"
         android:targetSdkVersion="17" />
     <!--
     Boot completed permission is for applying iptables/ip6tables after a reboot.  iptables/ip6tables is not persistent so a reboot
@@ -34,11 +34,12 @@
         android:hardwareAccelerated="true"
         android:icon="@drawable/icon"
         android:label="@string/app_name" 
-        android:theme="@style/Theme.Sherlock" >
+        android:theme="@android:style/Theme.Holo" >
         <activity
-            android:name=".MainActivity"
+            android:name=".FirewallActivity"
             android:configChanges="keyboardHidden|orientation|screenSize|keyboard|locale"
             android:label="@string/app_name"
+            android:uiOptions="splitActionBarWhenNarrow"
             android:windowSoftInputMode="stateHidden" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -55,8 +56,8 @@
         <activity android:name=".LoadProfile" />
         <activity android:name=".EditProfileNames" />
         <activity android:name=".UserSettings" />
-        <activity android:name=".showLog" />
-        <activity android:name=".showRules" />
+        <activity android:name=".ShowLog" />
+        <activity android:name=".ShowRules" />
         <activity
             android:name=".WidgetActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" >
@@ -65,7 +66,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name="com.jtschohl.androidfirewall.setRulesOnBootService" >
+        <service android:name=".SetRulesOnBootService" >
         </service>
 
         <receiver
@@ -85,7 +86,7 @@
                 </data>
             </intent-filter>
         </receiver>
-        <receiver android:name="com.jtschohl.androidfirewall.CheckForChangeToRoaming" >
+        <receiver android:name=".CheckForChangeToRoaming" >
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
@@ -125,26 +126,6 @@
             </intent-filter>
         </receiver>
 
-        <activity
-            android:name=".plugin.EditActivity"
-            android:exported="true"
-            android:icon="@drawable/icon"
-            android:label="@string/tasker_name"
-            android:uiOptions="splitActionBarWhenNarrow"
-            android:windowSoftInputMode="adjustResize" >
-            <intent-filter>
-                <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
-            </intent-filter>
-        </activity>
-
-        <receiver
-            android:name=".plugin.FireReceiver"
-            android:exported="true"
-            android:process=":background" >
-            <intent-filter>
-                <action android:name="com.twofortyfouram.locale.intent.action.FIRE_SETTING" />
-            </intent-filter>
-        </receiver>
     </application>
 
 </manifest>
