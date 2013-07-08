@@ -44,11 +44,12 @@
     </CheckBox>
 
     <TextView
+        style="@android:style/TextAppearance.Holo.Small"
         android:id="@+id/itemtext"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="5dip"
-        android:text="uid:packages" >
+        android:textStyle="italic" >
     </TextView>
 
 </LinearLayout>

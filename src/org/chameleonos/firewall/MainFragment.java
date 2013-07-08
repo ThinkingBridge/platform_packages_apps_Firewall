@@ -68,7 +68,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
@@ -120,7 +119,6 @@ public class MainFragment extends Fragment implements
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Api.assertBinaries(getActivity(), true);
 		setHasOptionsMenu(true);
 	}
 
@@ -798,24 +796,11 @@ public class MainFragment extends Fragment implements
 		case R.id.applyrules:
 			applyOrSaveRules();
 			return true;
-		case R.id.exit:
-			getActivity().finish();
-			System.exit(0);
-			return true;
-		case R.id.help:
-			new HelpDialog(getActivity()).show();
-			return true;
 		case R.id.setpwd:
 			setPassword();
 			return true;
-		case R.id.showlog:
-			showLog();
-			return true;
 		case R.id.showrules:
 			showRules();
-			return true;
-		case R.id.clearlog:
-			clearLog();
 			return true;
 		case R.id.exportrules:
 			exportRules();
@@ -825,18 +810,6 @@ public class MainFragment extends Fragment implements
 			return true;
 		case R.id.managerulefiles:
 			manageRuleFiles();
-			return true;
-		case R.id.saveprofile:
-			saveProfile();
-			return true;
-		case R.id.loadprofile:
-			selectProfile();
-			return true;
-		case R.id.editprofilenames:
-			editProfileNames();
-			return true;
-		case R.id.usersettings:
-			userSettings();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -1025,24 +998,6 @@ public class MainFragment extends Fragment implements
 		}
 	}
 
-	/**
-	 * Edit profile names
-	 */
-	private void editProfileNames() {
-		Intent intent = new Intent();
-		intent.setClass(getActivity(), EditProfileNames.class);
-		startActivityForResult(intent, EDIT_PROFILE_REQUEST);
-	}
-
-	/**
-	 * User Settings
-	 */
-	private void userSettings() {
-		Intent intent = new Intent();
-		intent.setClass(getActivity(), UserSettings.class);
-		startActivityForResult(intent, USER_SETTINGS_REQUEST);
-	}
-
 	// set Request Code for Rules Import
 	static final int IMPORT_RULES_REQUEST = 10;
 	// set Request code for Rules export
@@ -1130,40 +1085,6 @@ public class MainFragment extends Fragment implements
 	}
 
 	/**
-	 * Show logs on a dialog
-	 */
-	private void showLog() {
-		Intent intent = new Intent();
-		intent.setClass(getActivity(), ShowLog.class);
-		startActivityForResult(intent, 0);
-	}
-
-	/**
-	 * Clear logs
-	 */
-	private void clearLog() {
-		final Resources res = getResources();
-		final ProgressDialog progress = ProgressDialog.show(getActivity(),
-				res.getString(R.string.working),
-				res.getString(R.string.please_wait), true);
-		final Handler handler = new Handler() {
-			public void handleMessage(Message msg) {
-				try {
-					progress.dismiss();
-				} catch (Exception ex) {
-				}
-				if (!Api.hasRootAccess(getActivity(), true))
-					return;
-				if (Api.clearLog(getActivity())) {
-					Toast.makeText(getActivity(), R.string.log_cleared,
-							Toast.LENGTH_SHORT).show();
-				}
-			}
-		};
-		handler.sendEmptyMessageDelayed(0, 100);
-	}
-
-	/**
 	 * Apply or save iptable rules, showing a visual indication
 	 */
 	private void applyOrSaveRules() {
@@ -1184,8 +1105,7 @@ public class MainFragment extends Fragment implements
 				}
 				if (enabled) {
 					Log.d("Android Firewall", "Applying rules.");
-					if (Api.hasRootAccess(getActivity(), true)
-							&& Api.applyIptablesRules(getActivity(), true)) {
+					if (Api.applyIptablesRules(getActivity(), true)) {
 						Toast.makeText(getActivity(),
 								R.string.rules_applied, Toast.LENGTH_SHORT)
 								.show();
@@ -1279,8 +1199,6 @@ public class MainFragment extends Fragment implements
 					progress.dismiss();
 				} catch (Exception ex) {
 				}
-				if (!Api.hasRootAccess(getActivity(), true))
-					return;
 				if (Api.purgeIptables(getActivity(), true)) {
 					Toast.makeText(getActivity(), R.string.rules_deleted,
 							Toast.LENGTH_SHORT).show();

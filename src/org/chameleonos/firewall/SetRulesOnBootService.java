@@ -63,8 +63,7 @@ public class SetRulesOnBootService extends Service {
 							.isEnabled(getApplicationContext());
 					if (enabled) {
 						Log.d("Android Firewall", "Applying rules.");
-						if (Api.hasRootAccess(getApplicationContext(), true)
-								&& Api.applyIptablesRules(
+						if (Api.applyIptablesRules(
 										getApplicationContext(), true)) {
 							Log.d("Android Firewall",
 									"Enabled - Firewall successfully enabled on boot.");

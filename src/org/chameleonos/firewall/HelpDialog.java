@@ -37,7 +37,7 @@ public class HelpDialog extends AlertDialog {
 	@SuppressWarnings("deprecation")
 	protected HelpDialog(Context context) {
 		super(context);
-		final View view = getLayoutInflater().inflate(R.layout.help_dialog,
+		final View view = getLayoutInflater().inflate(R.layout.help_layout,
 				null);
 		setButton(context.getText(R.string.close), (OnClickListener) null);
 		setIcon(R.drawable.icon);

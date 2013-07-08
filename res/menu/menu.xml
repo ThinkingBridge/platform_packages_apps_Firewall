@@ -9,33 +9,24 @@
         android:id="@+id/applyrules"
         android:showAsAction="ifRoom"
         android:title="@string/applyrules"/>
-    <item
-        android:id="@+id/rulesoptions"
-        android:showAsAction="ifRoom"
-        android:title="@string/rulesoptions">
 
-        <!-- "Rules Management" submenu -->
-        <menu>
-            <item
-                android:id="@+id/exportrules"
-                android:showAsAction="ifRoom"
-                android:title="@string/exportrules"/>
-            <item
-                android:id="@+id/importrules"
-                android:showAsAction="ifRoom"
-                android:title="@string/importrules"/>
-            <item
-                android:id="@+id/managerulefiles"
-                android:showAsAction="ifRoom"
-                android:title="@string/managerulefiles"/>
-        </menu>
-    </item>
+    <item
+        android:id="@+id/exportrules"
+        android:showAsAction="ifRoom"
+        android:title="@string/exportrules"/>
+    <item
+        android:id="@+id/importrules"
+        android:showAsAction="ifRoom"
+        android:title="@string/importrules"/>
+    <item
+        android:id="@+id/managerulefiles"
+        android:showAsAction="ifRoom"
+        android:title="@string/managerulefiles"/>
+    <!-- 
     <item
         android:id="@+id/profilesoptions"
         android:showAsAction="ifRoom"
         android:title="@string/profilesoptions">
-
-        <!-- "Profiles Management" submenu -->
         <menu>
             <item
                 android:id="@+id/saveprofile"
@@ -67,10 +58,12 @@
         android:id="@+id/showrules"
         android:showAsAction="ifRoom"
         android:title="@string/showrules"/>
+    -->
     <item
         android:id="@+id/setpwd"
         android:showAsAction="ifRoom"
         android:title="@string/setpwd"/>
+    <!-- 
     <item
         android:id="@+id/help"
         android:showAsAction="ifRoom"
@@ -79,5 +72,6 @@
         android:id="@+id/exit"
         android:showAsAction="ifRoom"
         android:title="@string/exit"/>
+    -->
 
 </menu>

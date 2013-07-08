@@ -158,6 +158,41 @@ public class Shell {
 	}
 
 	/**
+	 * This class provides utility functions to easily execute commands using invoke-as
+	 */
+	public static class INVOKE {
+		/**
+		 * Runs command and return output
+		 * 
+		 * @param command The command to run
+		 * @return Output of the command, or null in case of an error
+		 */
+		public static List<String> run(String command) {
+			return Shell.run("invoke-as -u root sh", new String[] { command }, false);
+		}
+		
+		/**
+		 * Runs commands and return output
+		 * 
+		 * @param commands The commands to run
+		 * @return Output of the commands, or null in case of an error
+		 */
+		public static List<String> run(List<String> commands) {
+			return Shell.run("invoke-as -u root sh", commands.toArray(new String[commands.size()]), false);
+		}
+
+		/**
+		 * Runs command and return output
+		 * 
+		 * @param commands The commands to run
+		 * @return Output of the commands, or null in case of an error
+		 */
+		public static List<String> run(String[] commands) {
+			return Shell.run("invoke-as -u root sh", commands, false);
+		}
+	}
+
+	/**
 	 * This class provides utility functions to easily execute commands using SU
 	 * (root shell), as well as detecting whether or not root is available, and
 	 * if so which version.

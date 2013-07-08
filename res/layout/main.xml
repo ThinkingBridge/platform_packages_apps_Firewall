@@ -5,23 +5,18 @@
     android:duplicateParentState="false"
     android:orientation="vertical" >
 
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="#FFFFFFFF" />
-
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:padding="6dp" >
 
         <TextView
+            style="@android:style/TextAppearance.Medium"
             android:id="@+id/label_mode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
-            android:text="@string/mode_header"
-            android:textSize="15sp" >
+            android:text="@string/mode_header" >
         </TextView>
     </LinearLayout>
 
@@ -65,33 +60,33 @@
             android:id="@+id/label_wifi"
             android:layout_width="42dp"
             android:layout_height="42dp"
-            android:background="@color/black"
+            android:background="@android:color/transparent"
             android:clickable="true"
             android:text="@string/wifi"
-            android:textColor="@color/blue"
-            android:textSize="11sp"
+            android:textColor="@android:color/holo_blue_light"
+            android:textSize="12sp"
             android:typeface="normal" />
 
         <Button
             android:id="@+id/label_data"
             android:layout_width="42dp"
             android:layout_height="42dp"
-            android:background="@color/black"
+            android:background="@android:color/transparent"
             android:clickable="true"
             android:text="@string/data"
-            android:textColor="@color/blue"
-            android:textSize="11sp"
+            android:textColor="@android:color/holo_blue_light"
+            android:textSize="12sp"
             android:typeface="normal" />
 
         <Button
             android:id="@+id/label_roam"
             android:layout_width="42dp"
             android:layout_height="42dp"
-            android:background="@color/black"
+            android:background="@android:color/transparent"
             android:clickable="true"
             android:text="@string/roaming"
-            android:textColor="@color/blue"
-            android:textSize="11sp"
+            android:textColor="@android:color/holo_blue_light"
+            android:textSize="12sp"
             android:typeface="normal"
             android:visibility="gone" />
 
@@ -99,11 +94,11 @@
             android:id="@+id/label_vpn"
             android:layout_width="42dp"
             android:layout_height="42dp"
-            android:background="@color/black"
+            android:background="@android:color/transparent"
             android:clickable="true"
             android:text="@string/vpn"
-            android:textColor="@color/blue"
-            android:textSize="11sp"
+            android:textColor="@android:color/holo_blue_light"
+            android:textSize="12sp"
             android:typeface="normal"
             android:visibility="gone" />
 
@@ -111,22 +106,22 @@
             android:id="@+id/label_clear"
             android:layout_width="wrap_content"
             android:layout_height="42dp"
-            android:background="@color/black"
+            android:background="@android:color/transparent"
             android:clickable="true"
             android:text="@string/clear"
-            android:textColor="@color/blue"
-            android:textSize="11sp"
+            android:textColor="@android:color/holo_blue_light"
+            android:textSize="12sp"
             android:typeface="normal" />
 
         <Button
             android:id="@+id/label_invert"
             android:layout_width="wrap_content"
             android:layout_height="42dp"
-            android:background="@color/black"
+            android:background="@android:color/transparent"
             android:clickable="true"
             android:text="@string/invert"
-            android:textColor="@color/blue"
-            android:textSize="11sp"
+            android:textColor="@android:color/holo_blue_light"
+            android:textSize="12sp"
             android:typeface="normal" />
 
         <View

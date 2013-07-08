@@ -22,12 +22,18 @@ import java.util.List;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 /**
  * @author Clark Scheff
@@ -37,8 +43,11 @@ public class FirewallActivity extends Activity {
 	private ListView mDrawerList;
 	private DrawerLayout mDrawerLayout;
 	private CharSequence mTitle = "";
+	private ActionBarDrawerToggle mDrawerToggle;
 	private List<NavigationDrawerItem> mNavItems;
 	
+	enum Type { Header, Fragment }
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -48,19 +57,45 @@ public class FirewallActivity extends Activity {
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
-		// Set the adapter for the list view
-		mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-				android.R.layout.simple_list_item_1, new String[] {"Firewall", "Log"}));
+		setupNavItems();
 		// Set the list's click listener
 		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-		
-		setupNavItems();
+		mDrawerList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+
+        mDrawerToggle = new ActionBarDrawerToggle(
+                this,
+                mDrawerLayout,
+                R.drawable.ic_drawer_holo_dark,
+                0,
+                0
+                ) {
+
+            /** Called when a drawer has settled in a completely closed state. */
+            public void onDrawerClosed(View view) {
+                getActionBar().setTitle(mTitle);
+            }
+
+            /** Called when a drawer has settled in a completely open state. */
+            public void onDrawerOpened(View drawerView) {
+            }
+        };
+
+        // Set the drawer toggle as the DrawerListener
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
 	}
 	
 	private void setupNavItems() {
 		mNavItems = new ArrayList<NavigationDrawerItem>();
-		mNavItems.add(new NavigationDrawerItem(MainFragment.class.getName(), "Firewall"));
-		mNavItems.add(new NavigationDrawerItem(LogFragment.class.getName(), "Log"));
+		mNavItems.add(new NavigationDrawerItem(MainFragment.class.getName(), "Firewall", Type.Fragment, R.drawable.ic_firewall));
+		mNavItems.add(new NavigationDrawerItem(LogFragment.class.getName(), "Log", Type.Fragment, R.drawable.ic_log));
+		mNavItems.add(new NavigationDrawerItem(ShowRulesFragment.class.getName(), "View Rules", Type.Fragment, R.drawable.ic_show_rules));
+		mNavItems.add(new NavigationDrawerItem(ProfilesFragment.class.getName(), "Profiles", Type.Fragment, R.drawable.ic_profiles));
+		mNavItems.add(new NavigationDrawerItem(HelpFragment.class.getName(), "Help", Type.Fragment, R.drawable.ic_help));
+		mNavItems.add(new NavigationDrawerItem(SettingsFragment.class.getName(), "Settings", Type.Fragment, R.drawable.ic_settings));
+		// Set the adapter for the list view
+		mDrawerList.setAdapter(new NavigationAdapter());
 		selectItem(0);
 	}
 	
@@ -102,13 +137,80 @@ public class FirewallActivity extends Activity {
 	    getActionBar().setTitle(mTitle);
 	}
 	
-	private class NavigationDrawerItem {
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Pass the event to ActionBarDrawerToggle, if it returns
+        // true, then it has handled the app icon touch event
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+          return true;
+        }
+        // Handle your other action bar items...
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private class NavigationDrawerItem {
+		Type type;
 		String fragment;
 		String title;
+		int iconId;
 		
-		public NavigationDrawerItem(String fragment, String title) {
+		public NavigationDrawerItem(String fragment, String title, Type type) {
+			this(fragment, title, type, 0);
+		}
+
+		public NavigationDrawerItem(String fragment, String title, Type type, int iconId) {
 			this.fragment = fragment;
 			this.title = title;
+			this.type = type;
+			this.iconId = iconId;
 		}
+	}
+	
+	private class NavigationAdapter extends BaseAdapter {
+
+		@Override
+		public int getCount() {
+			return mNavItems.size();
+		}
+
+		@Override
+		public Object getItem(int position) {
+			return mNavItems.get(position);
+		}
+
+		@Override
+		public long getItemId(int position) {
+			return 0;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			if (convertView == null)
+				convertView = getLayoutInflater().inflate(R.layout.navigation_list_item, null);
+			NavigationDrawerItem item = mNavItems.get(position);
+			
+			ImageView iv = (ImageView) convertView.findViewById(R.id.icon);
+			iv.setImageResource(item.iconId);
+			
+			TextView tv = (TextView) convertView.findViewById(R.id.title);
+			tv.setText(item.title);
+			
+			return convertView;
+		}
+		
 	}
 }

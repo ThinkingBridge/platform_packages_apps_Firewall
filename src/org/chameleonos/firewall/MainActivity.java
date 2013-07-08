@@ -792,18 +792,15 @@ public class MainActivity extends Activity implements
 		case R.id.applyrules:
 			applyOrSaveRules();
 			return true;
-		case R.id.exit:
-			finish();
-			System.exit(0);
-			return true;
-		case R.id.help:
-			new HelpDialog(this).show();
-			return true;
+//		case R.id.exit:
+//			finish();
+//			System.exit(0);
+//			return true;
+//		case R.id.help:
+//			new HelpDialog(this).show();
+//			return true;
 		case R.id.setpwd:
 			setPassword();
-			return true;
-		case R.id.showlog:
-			showLog();
 			return true;
 		case R.id.showrules:
 			showRules();
@@ -823,18 +820,18 @@ public class MainActivity extends Activity implements
 		case R.id.managerulefiles:
 			manageRuleFiles();
 			return true;
-		case R.id.saveprofile:
-			saveProfile();
-			return true;
-		case R.id.loadprofile:
-			selectProfile();
-			return true;
-		case R.id.editprofilenames:
-			editProfileNames();
-			return true;
-		case R.id.usersettings:
-			userSettings();
-			return true;
+//		case R.id.saveprofile:
+//			saveProfile();
+//			return true;
+//		case R.id.loadprofile:
+//			selectProfile();
+//			return true;
+//		case R.id.editprofilenames:
+//			editProfileNames();
+//			return true;
+//		case R.id.usersettings:
+//			userSettings();
+//			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -930,9 +927,9 @@ public class MainActivity extends Activity implements
 	 * Set a new init script
 	 */
 	private void setCustomScript() {
-		Intent intent = new Intent();
-		intent.setClass(this, CustomScriptActivity.class);
-		startActivityForResult(intent, 0);
+//		Intent intent = new Intent();
+//		intent.setClass(this, CustomScriptActivity.class);
+//		startActivityForResult(intent, 0);
 	}
 
 	// import rules file

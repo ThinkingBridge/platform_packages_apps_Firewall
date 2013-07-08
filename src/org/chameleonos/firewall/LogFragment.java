@@ -25,18 +25,28 @@ package org.chameleonos.firewall;
 import org.chameleonos.firewall.R;
 
 import android.app.Fragment;
+import android.app.ProgressDialog;
+import android.content.res.Resources;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class LogFragment extends Fragment {
 
+	TextView mLog;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setHasOptionsMenu(true);
 	}
 
 	@Override
@@ -44,11 +54,48 @@ public class LogFragment extends Fragment {
 			Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.logs_layout, null);
 		String logs = Api.showLog(getActivity().getApplicationContext());
-		TextView text = (TextView) v.findViewById(R.id.showlogs);
-		Log.d(logs, "debugaf");
-		text.setText(logs);
+		mLog = (TextView) v.findViewById(R.id.showlogs);
+		mLog.setText(logs);
 		
 		return v;
 	}
+	
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		super.onCreateOptionsMenu(menu, inflater);
+		inflater.inflate(R.menu.log_menu, menu);
+	}
 
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.clearlog:
+			clearLog();
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+	/**
+	 * Clear logs
+	 */
+	private void clearLog() {
+		final Resources res = getResources();
+		final ProgressDialog progress = ProgressDialog.show(getActivity(),
+				res.getString(R.string.working),
+				res.getString(R.string.please_wait), true);
+		final Handler handler = new Handler() {
+			public void handleMessage(Message msg) {
+				try {
+					progress.dismiss();
+				} catch (Exception ex) {
+				}
+				if (Api.clearLog(getActivity())) {
+					String logs = Api.showLog(getActivity().getApplicationContext());
+					mLog.setText(logs);
+				}
+			}
+		};
+		handler.sendEmptyMessageDelayed(0, 100);
+	}
 }

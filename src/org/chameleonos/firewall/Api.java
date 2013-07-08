@@ -43,7 +43,7 @@ import java.util.StringTokenizer;
 import org.chameleonos.firewall.R;
 
 import eu.chainfire.libsuperuser.Shell;
-import eu.chainfire.libsuperuser.Shell.SU;
+import eu.chainfire.libsuperuser.Shell.INVOKE;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -115,14 +115,14 @@ public final class Api {
 	public static final String PROFILE5 = "profile5";
 
 	// Messages
-	public static final String STATUS_CHANGED_MSG = "com.jtschohl.androidfirewall.intent.action.STATUS_CHANGED";
-	public static final String TOGGLE_REQUEST_MSG = "com.jtschohl.androidfirewall.intent.action.TOGGLE_REQUEST";
-	public static final String CUSTOM_SCRIPT_MSG = "com.jtschohl.androidfirewall.intent.action.CUSTOM_SCRIPT";
+	public static final String STATUS_CHANGED_MSG = "org.chameleonos.firewall.intent.action.STATUS_CHANGED";
+	public static final String TOGGLE_REQUEST_MSG = "org.chameleonos.firewall.intent.action.TOGGLE_REQUEST";
+	public static final String CUSTOM_SCRIPT_MSG = "org.chameleonos.firewall.intent.action.CUSTOM_SCRIPT";
 	// Message extras (parameters)
-	public static final String STATUS_EXTRA = "com.jtschohl.androidfirewall.intent.extra.STATUS";
-	public static final String SCRIPT_EXTRA = "com.jtschohl.androidfirewall.intent.extra.SCRIPT";
-	public static final String SCRIPT2_EXTRA = "com.jtschohl.androidfirewall.intent.extra.SCRIPT2";
-	public static final String EXPORT_EXTRA = "com.jtschohl.androidfirewall.intent.extra.EXPORT";
+	public static final String STATUS_EXTRA = "org.chameleonos.firewall.intent.extra.STATUS";
+	public static final String SCRIPT_EXTRA = "org.chameleonos.firewall.intent.extra.SCRIPT";
+	public static final String SCRIPT2_EXTRA = "org.chameleonos.firewall.intent.extra.SCRIPT2";
+	public static final String EXPORT_EXTRA = "org.chameleonos.firewall.intent.extra.EXPORT";
 
 	// Cached applications
 	public static DroidApp applications[] = null;
@@ -153,42 +153,9 @@ public final class Api {
 	 * @return script header
 	 */
 	private static String scriptHeader(Context ctx) {
-		final String dir = ctx.getDir("bin", 0).getAbsolutePath();
-		final String myiptables = dir + "/iptables_armv5";
 		return "" + "IPTABLES=iptables\n" + "IP6TABLES=ip6tables\n"
 				+ "BUSYBOX=busybox\n" + "GREP=grep\n" + "ECHO=echo\n"
-				+ "# Try to find busybox\n" + "if "
-				+ dir
-				+ "/busybox_g1 --help >/dev/null 2>/dev/null ; then\n"
-				+ "	BUSYBOX="
-				+ dir
-				+ "/busybox_g1\n"
-				+ "	GREP=\"$BUSYBOX grep\"\n"
-				+ "	ECHO=\"$BUSYBOX echo\"\n"
-				+ "elif busybox --help >/dev/null 2>/dev/null ; then\n"
-				+ "	BUSYBOX=busybox\n"
-				+ "elif /system/xbin/busybox --help >/dev/null 2>/dev/null ; then\n"
-				+ "	BUSYBOX=/system/xbin/busybox\n"
-				+ "elif /system/bin/busybox --help >/dev/null 2>/dev/null ; then\n"
-				+ "	BUSYBOX=/system/bin/busybox\n"
-				+ "fi\n"
-				+ "# Try to find grep\n"
-				+ "if ! $ECHO 1 | $GREP -q 1 >/dev/null 2>/dev/null ; then\n"
-				+ "	if $ECHO 1 | $BUSYBOX grep -q 1 >/dev/null 2>/dev/null ; then\n"
-				+ "		GREP=\"$BUSYBOX grep\"\n"
-				+ "	fi\n"
-				+ "	# Grep is absolutely required\n"
-				+ "	if ! $ECHO 1 | $GREP -q 1 >/dev/null 2>/dev/null ; then\n"
-				+ "		$ECHO The grep command is required. Android Firewall will not work.\n"
-				+ "		exit 1\n"
-				+ "	fi\n"
-				+ "fi\n"
-				+ "# Try to find iptables\n"
-				+ "if "
-				+ myiptables
-				+ " --version >/dev/null 2>/dev/null ; then\n"
-				+ "	IPTABLES="
-				+ myiptables + "\n" + "fi\n" + "";
+				+ "TAG=chaos\n";
 	}
 
 	/**
@@ -283,36 +250,36 @@ public final class Api {
 			script.append(""
 					+ "dmesg -c >/dev/null || exit\n"
 					+ "$IPTABLES --version || exit 1\n"
-					+ "# Create the droidwall chains if necessary\n"
-					+ "$IPTABLES -L droidwall >/dev/null 2>/dev/null || $IPTABLES --new droidwall || exit 3\n"
-					+ "$IPTABLES -L droidwall-3g >/dev/null 2>/dev/null || $IPTABLES --new droidwall-3g || exit 4\n"
-					+ "$IPTABLES -L droidwall-wifi >/dev/null 2>/dev/null || $IPTABLES --new droidwall-wifi || exit 5\n"
-					+ "$IPTABLES -L droidwall-reject >/dev/null 2>/dev/null || $IPTABLES --new droidwall-reject || exit 6\n"
-					+ "$IPTABLES -L droidwall-vpn >/dev/null 2>/dev/null || $IPTABLES --new droidwall-vpn || exit 7 \n"
-					+ "# Add droidwall chain to OUTPUT chain if necessary\n"
-					+ "$IPTABLES -L OUTPUT | $GREP -q droidwall || $IPTABLES -A OUTPUT -j droidwall || exit 11\n"
+					+ "# Create the firewall chains if necessary\n"
+					+ "$IPTABLES -L $TAG >/dev/null 2>/dev/null || $IPTABLES --new $TAG || exit 3\n"
+					+ "$IPTABLES -L $TAG-3g >/dev/null 2>/dev/null || $IPTABLES --new $TAG-3g || exit 4\n"
+					+ "$IPTABLES -L $TAG-wifi >/dev/null 2>/dev/null || $IPTABLES --new $TAG-wifi || exit 5\n"
+					+ "$IPTABLES -L $TAG-reject >/dev/null 2>/dev/null || $IPTABLES --new $TAG-reject || exit 6\n"
+					+ "$IPTABLES -L $TAG-vpn >/dev/null 2>/dev/null || $IPTABLES --new $TAG-vpn || exit 7 \n"
+					+ "# Add firewall chain to OUTPUT chain if necessary\n"
+					+ "$IPTABLES -L OUTPUT | $GREP -q $TAG || $IPTABLES -A OUTPUT -j $TAG || exit 11\n"
 					+ "# Flush existing rules\n"
-					+ "$IPTABLES -F droidwall || exit 17\n"
-					+ "$IPTABLES -F droidwall-3g || exit 18\n"
-					+ "$IPTABLES -F droidwall-wifi || exit 19\n"
-					+ "$IPTABLES -F droidwall-reject || exit 20\n"
-					+ "$IPTABLES -F droidwall-vpn || exit 20\n"
+					+ "$IPTABLES -F $TAG || exit 17\n"
+					+ "$IPTABLES -F $TAG-3g || exit 18\n"
+					+ "$IPTABLES -F $TAG-wifi || exit 19\n"
+					+ "$IPTABLES -F $TAG-reject || exit 20\n"
+					+ "$IPTABLES -F $TAG-vpn || exit 20\n"
 					+ "# Create reject rule and fix for WiFi slow DNS lookups"
-					+ "$IPTABLES -A droidwall-reject -j REJECT || exit 21\n"
-					+ "$IPTABLES -A droidwall -m owner --uid-owner 0 -p udp --dport 53 -j RETURN || exit 22\n"
-					+ "$IPTABLES -D OUTPUT -j droidwall || exit 11\n"
-					+ "$IPTABLES -I OUTPUT 1 -j droidwall || exit 12\n" + "");
+					+ "$IPTABLES -A $TAG-reject -j REJECT || exit 21\n"
+					+ "$IPTABLES -A $TAG -m owner --uid-owner 0 -p udp --dport 53 -j RETURN || exit 22\n"
+					+ "$IPTABLES -D OUTPUT -j $TAG || exit 11\n"
+					+ "$IPTABLES -I OUTPUT 1 -j $TAG || exit 12\n" + "");
 			// Check if logging is enabled
 			if (logenabled) {
 				script.append(""
 						+ "# Create the log and reject rules (ignore errors on the LOG target just in case it is not available)\n"
-						+ "$IPTABLES -A droidwall-reject -j LOG --log-prefix \"[AndroidFirewall] \" --log-level 4 --log-uid\n"
-						+ "$IPTABLES -A droidwall-reject -j REJECT || exit 29\n"
+						+ "$IPTABLES -A $TAG-reject -j LOG --log-prefix \"[AndroidFirewall] \" --log-level 4 --log-uid\n"
+						+ "$IPTABLES -A $TAG-reject -j REJECT || exit 29\n"
 						+ "");
 			} else {
 				script.append(""
 						+ "# Create the reject rule (log disabled)\n"
-						+ "$IPTABLES -A droidwall-reject -j REJECT || exit 30\n"
+						+ "$IPTABLES -A $TAG-reject -j REJECT || exit 30\n"
 						+ "");
 			}
 			if (customScript.length() > 0) {
@@ -322,20 +289,20 @@ public final class Api {
 			}
 			script.append("# Main rules (per interface)\n");
 			for (final String itf : ITFS_3G) {
-				script.append("$IPTABLES -A droidwall -o ").append(itf)
-						.append(" -j droidwall-3g || exit 32\n");
+				script.append("$IPTABLES -A $TAG -o ").append(itf)
+						.append(" -j $TAG-3g || exit 32\n");
 			}
 			for (final String itf : ITFS_WIFI) {
-				script.append("$IPTABLES -A droidwall -o ").append(itf)
-						.append(" -j droidwall-wifi || exit 34\n");
+				script.append("$IPTABLES -A $TAG -o ").append(itf)
+						.append(" -j $TAG-wifi || exit 34\n");
 			}
 			for (final String itf : ITFS_VPN) {
-				script.append("$IPTABLES -A droidwall -o ").append(itf)
-						.append(" -j droidwall-vpn || exit 34\n");
+				script.append("$IPTABLES -A $TAG -o ").append(itf)
+						.append(" -j $TAG-vpn || exit 34\n");
 			}
 			script.append("# Filtering rules\n");
 			final String targetRule = (whitelist ? "RETURN"
-					: "droidwall-reject");
+					: "$TAG-reject");
 			final boolean any_3g = uids3g.indexOf(SPECIAL_UID_ANY) >= 0;
 			final boolean any_wifi = uidsWifi.indexOf(SPECIAL_UID_ANY) >= 0;
 			final boolean any_vpn = uidsvpn.indexOf(SPECIAL_UID_ANY) >= 0;
@@ -346,21 +313,21 @@ public final class Api {
 				if (uid != -1) {
 					script.append("# dhcp user\n");
 					script.append(
-							"$IPTABLES -A droidwall-wifi -m owner --uid-owner ")
+							"$IPTABLES -A $TAG-wifi -m owner --uid-owner ")
 							.append(uid).append(" -j RETURN || exit 36\n");
 				}
 				uid = android.os.Process.getUidForName("wifi");
 				if (uid != -1) {
 					script.append("# wifi user\n");
 					script.append(
-							"$IPTABLES -A droidwall-wifi -m owner --uid-owner ")
+							"$IPTABLES -A $TAG-wifi -m owner --uid-owner ")
 							.append(uid).append(" -j RETURN || exit 38\n");
 				}
 			}
 			if (any_3g) {
 				if (blacklist) {
 					/* block any application on this interface */
-					script.append("$IPTABLES -A droidwall-3g -j ")
+					script.append("$IPTABLES -A $TAG-3g -j ")
 							.append(targetRule).append(" || exit 40\n");
 				}
 			} else {
@@ -369,7 +336,7 @@ public final class Api {
 					for (final Integer uid : uidsroaming) {
 						if (uid >= 0)
 							script.append(
-									"$IPTABLES -I droidwall-3g -m owner --uid-owner ")
+									"$IPTABLES -I $TAG-3g -m owner --uid-owner ")
 									.append(uid).append(" -j ")
 									.append(targetRule).append(" || exit 50\n");
 					}
@@ -377,26 +344,26 @@ public final class Api {
 					for (final Integer uid : uids3g) {
 						if (uid >= 0)
 							script.append(
-									"$IPTABLES -I droidwall-3g -m owner --uid-owner ")
+									"$IPTABLES -I $TAG-3g -m owner --uid-owner ")
 									.append(uid).append(" -j ")
 									.append(targetRule).append(" || exit 42\n");
 					}
 				}
 			}
-			script.append("$IPTABLES -I droidwall-3g -m owner --uid-owner 9999 -j RETURN || exit 9999\n");
+			script.append("$IPTABLES -I $TAG-3g -m owner --uid-owner 9999 -j RETURN || exit 9999\n");
 			if (any_wifi) {
 				if (blacklist) {
 					/* block any application on this interface */
-					script.append("$IPTABLES -A droidwall-wifi -j ")
+					script.append("$IPTABLES -A $TAG-wifi -j ")
 							.append(targetRule).append(" || exit 44\n");
-					// script.append("$IP6TABLES -A droidwall-wifi -j ").append(targetRule).append(" || exit 45\n");
+					// script.append("$IP6TABLES -A $TAG-wifi -j ").append(targetRule).append(" || exit 45\n");
 				}
 			} else {
 				/* release/block individual applications on this interface */
 				for (final Integer uid : uidsWifi) {
 					if (uid >= 0)
 						script.append(
-								"$IPTABLES -A droidwall-wifi -m owner --uid-owner ")
+								"$IPTABLES -A $TAG-wifi -m owner --uid-owner ")
 								.append(uid).append(" -j ").append(targetRule)
 								.append(" || exit 46\n");
 				}
@@ -405,38 +372,38 @@ public final class Api {
 				if (!any_3g) {
 					if (uids3g.indexOf(SPECIAL_UID_KERNEL) >= 0) {
 						script.append("# hack to allow kernel packets on white-list\n");
-						script.append("$IPTABLES -A droidwall-3g -m owner --uid-owner 0:999999999 -j droidwall-reject || exit 48\n");
+						script.append("$IPTABLES -A $TAG-3g -m owner --uid-owner 0:999999999 -j $TAG-reject || exit 48\n");
 					} else {
-						script.append("$IPTABLES -A droidwall-3g -j droidwall-reject || exit 50\n");
+						script.append("$IPTABLES -A $TAG-3g -j $TAG-reject || exit 50\n");
 
 					}
 				}
 				if (!any_wifi) {
 					if (uidsWifi.indexOf(SPECIAL_UID_KERNEL) >= 0) {
 						script.append("# hack to allow kernel packets on white-list\n");
-						script.append("$IPTABLES -A droidwall-wifi -m owner --uid-owner 0:999999999 -j droidwall-reject || exit 52\n");
+						script.append("$IPTABLES -A $TAG-wifi -m owner --uid-owner 0:999999999 -j $TAG-reject || exit 52\n");
 
 					} else {
-						script.append("$IPTABLES -A droidwall-wifi -j droidwall-reject || exit 54\n");
+						script.append("$IPTABLES -A $TAG-wifi -j $TAG-reject || exit 54\n");
 					}
 				}
 			} else {
 				if (uids3g.indexOf(SPECIAL_UID_KERNEL) >= 0) {
 					script.append("# hack to BLOCK kernel packets on black-list\n");
-					script.append("$IPTABLES -A droidwall-3g -m owner --uid-owner 0:999999999 -j RETURN || exit 56\n");
-					script.append("$IPTABLES -A droidwall-3g -j droidwall-reject || exit 57\n");
+					script.append("$IPTABLES -A $TAG-3g -m owner --uid-owner 0:999999999 -j RETURN || exit 56\n");
+					script.append("$IPTABLES -A $TAG-3g -j $TAG-reject || exit 57\n");
 				}
 				if (uidsWifi.indexOf(SPECIAL_UID_KERNEL) >= 0) {
 					script.append("# hack to BLOCK kernel packets on black-list\n");
-					script.append("$IPTABLES -A droidwall-wifi -m owner --uid-owner 0:999999999 -j RETURN || exit 60\n");
-					script.append("$IPTABLES -A droidwall-wifi -j droidwall-reject || exit 61\n");
+					script.append("$IPTABLES -A $TAG-wifi -m owner --uid-owner 0:999999999 -j RETURN || exit 60\n");
+					script.append("$IPTABLES -A $TAG-wifi -j $TAG-reject || exit 61\n");
 				}
 			}
 			if (vpnenabled) {
 				if (any_vpn && vpnenabled) {
 					if (blacklist) {
 						/* block any application on this interface */
-						script.append("$IPTABLES -A droidwall-vpn -j ")
+						script.append("$IPTABLES -A $TAG-vpn -j ")
 								.append(targetRule).append(" || exit 40\n");
 					}
 				} else {
@@ -444,7 +411,7 @@ public final class Api {
 					for (final Integer uid : uidsvpn) {
 						if (uid >= 0)
 							script.append(
-									"$IPTABLES -I droidwall-vpn -m owner --uid-owner ")
+									"$IPTABLES -I $TAG-vpn -m owner --uid-owner ")
 									.append(uid).append(" -j ")
 									.append(targetRule).append(" || exit 42\n");
 					}
@@ -453,19 +420,19 @@ public final class Api {
 					if (!any_vpn) {
 						if (uidsvpn.indexOf(SPECIAL_UID_KERNEL) >= 0) {
 							script.append("# hack to allow kernel packets on white-list\n");
-							script.append("$IPTABLES -A droidwall-vpn -m owner --uid-owner 0:999999999 -j droidwall-reject || exit 48\n");
+							script.append("$IPTABLES -A $TAG-vpn -m owner --uid-owner 0:999999999 -j $TAG-reject || exit 48\n");
 						} else {
-							script.append("$IPTABLES -A droidwall-vpn -j droidwall-reject || exit 50\n");
+							script.append("$IPTABLES -A $TAG-vpn -j $TAG-reject || exit 50\n");
 
 						}
 					} else {
-						script.append("$IPTABLES -A droidwall-vpn -j droidwall-reject || exit 54\n");
+						script.append("$IPTABLES -A $TAG-vpn -j $TAG-reject || exit 54\n");
 					}
 				} else {
 					if (uidsvpn.indexOf(SPECIAL_UID_KERNEL) >= 0) {
 						script.append("# hack to BLOCK kernel packets on black-list\n");
-						script.append("$IPTABLES -A droidwall-vpn -m owner --uid-owner 0:999999999 -j RETURN || exit 56\n");
-						script.append("$IPTABLES -A droidwall-vpn -j droidwall-reject || exit 57\n");
+						script.append("$IPTABLES -A $TAG-vpn -m owner --uid-owner 0:999999999 -j RETURN || exit 56\n");
+						script.append("$IPTABLES -A $TAG-vpn -j $TAG-reject || exit 57\n");
 					}
 				}
 			}
@@ -474,64 +441,64 @@ public final class Api {
 					script.append(scriptHeader(ctx));
 					script.append(""
 							+ "$IP6TABLES --version || exit 60\n"
-							+ "# Create the droidwall chains if necessary\n"
-							+ "$IP6TABLES -L droidwall >/dev/null 2>/dev/null || $IP6TABLES --new droidwall || exit 61\n"
-							+ "$IP6TABLES -L droidwall-3g >/dev/null 2>/dev/null || $IP6TABLES --new droidwall-3g || exit 64\n"
-							+ "$IP6TABLES -L droidwall-wifi >/dev/null 2>/dev/null || $IP6TABLES --new droidwall-wifi || exit 65\n"
-							+ "$IP6TABLES -L droidwall-reject >/dev/null 2>/dev/null || $IP6TABLES --new droidwall-reject || exit 66\n"
-							+ "$IP6TABLES -L droidwall-vpn >/dev/null 2>/dev/null || $IP6TABLES --new droidwall-vpn || exit 66\n"
-							+ "# Add droidwall chain to OUTPUT chain if necessary\n"
-							+ "$IP6TABLES -L OUTPUT | $GREP -q droidwall || $IP6TABLES -A OUTPUT -j droidwall || exit 67\n"
+							+ "# Create the firewall chains if necessary\n"
+							+ "$IP6TABLES -L $TAG >/dev/null 2>/dev/null || $IP6TABLES --new $TAG || exit 61\n"
+							+ "$IP6TABLES -L $TAG-3g >/dev/null 2>/dev/null || $IP6TABLES --new $TAG-3g || exit 64\n"
+							+ "$IP6TABLES -L $TAG-wifi >/dev/null 2>/dev/null || $IP6TABLES --new $TAG-wifi || exit 65\n"
+							+ "$IP6TABLES -L $TAG-reject >/dev/null 2>/dev/null || $IP6TABLES --new $TAG-reject || exit 66\n"
+							+ "$IP6TABLES -L $TAG-vpn >/dev/null 2>/dev/null || $IP6TABLES --new $TAG-vpn || exit 66\n"
+							+ "# Add firewall chain to OUTPUT chain if necessary\n"
+							+ "$IP6TABLES -L OUTPUT | $GREP -q $TAG || $IP6TABLES -A OUTPUT -j $TAG || exit 67\n"
 							+ "# Flush existing rules\n"
-							+ "$IP6TABLES -F droidwall || exit 70\n"
-							+ "$IP6TABLES -F droidwall-3g || exit 71\n"
-							+ "$IP6TABLES -F droidwall-wifi || exit 72\n"
-							+ "$IP6TABLES -F droidwall-reject || exit 73\n"
-							+ "$IP6TABLES -F droidwall-vpn || exit 73\n"
+							+ "$IP6TABLES -F $TAG || exit 70\n"
+							+ "$IP6TABLES -F $TAG-3g || exit 71\n"
+							+ "$IP6TABLES -F $TAG-wifi || exit 72\n"
+							+ "$IP6TABLES -F $TAG-reject || exit 73\n"
+							+ "$IP6TABLES -F $TAG-vpn || exit 73\n"
 							+ "# Create reject rule and fix for WiFi slow DNS lookups"
-							+ "$IP6TABLES -A droidwall-reject -j REJECT || exit 74\n"
-							+ "$IP6TABLES -A droidwall -m owner --uid-owner 0 -p udp --dport 53 -j RETURN || exit 75\n"
-							+ "$IP6TABLES -D OUTPUT -j droidwall || exit 68\n"
-							+ "$IP6TABLES -I OUTPUT 1 -j droidwall || exit 69\n"
+							+ "$IP6TABLES -A $TAG-reject -j REJECT || exit 74\n"
+							+ "$IP6TABLES -A $TAG -m owner --uid-owner 0 -p udp --dport 53 -j RETURN || exit 75\n"
+							+ "$IP6TABLES -D OUTPUT -j $TAG || exit 68\n"
+							+ "$IP6TABLES -I OUTPUT 1 -j $TAG || exit 69\n"
 							+ "");
 					// Check if logging is enabled
 					if (logenabled && ipv6enabled) {
 						script.append(""
 								+ "# Create the log and reject rules (ignore errors on the LOG target just in case it is not available)\n"
-								+ "$IP6TABLES -A droidwall-reject -j LOG --log-prefix \"[AndroidFirewall] \" --log-level 4 --log-uid\n"
-								+ "$IP6TABLES -A droidwall-reject -j REJECT || exit 76\n"
+								+ "$IP6TABLES -A $TAG-reject -j LOG --log-prefix \"[AndroidFirewall] \" --log-level 4 --log-uid\n"
+								+ "$IP6TABLES -A $TAG-reject -j REJECT || exit 76\n"
 								+ "");
 					} else {
 						script.append(""
 								+ "# Create the reject rule (log disabled)\n"
-								+ "$IP6TABLES -A droidwall-reject -j REJECT || exit 77\n"
+								+ "$IP6TABLES -A $TAG-reject -j REJECT || exit 77\n"
 								+ "");
 					}
 
 					script.append("# Main rules (per interface)\n");
 					for (final String itf : ITFS_3G) {
-						script.append("$IP6TABLES -A droidwall -o ")
+						script.append("$IP6TABLES -A $TAG -o ")
 								.append(itf)
-								.append(" -j droidwall-3g || exit 78\n");
+								.append(" -j $TAG-3g || exit 78\n");
 
 					}
 					for (final String itf : ITFS_WIFI) {
-						script.append("$IP6TABLES -A droidwall -o ")
+						script.append("$IP6TABLES -A $TAG -o ")
 								.append(itf)
-								.append(" -j droidwall-wifi || exit 79\n");
+								.append(" -j $TAG-wifi || exit 79\n");
 
 					}
 					for (final String itf : ITFS_VPN) {
-						script.append("$IP6TABLES -A droidwall -o ")
+						script.append("$IP6TABLES -A $TAG -o ")
 								.append(itf)
-								.append(" -j droidwall-vpn || exit 79\n");
+								.append(" -j $TAG-vpn || exit 79\n");
 
 					}
 					int uid = android.os.Process.getUidForName("dhcp");
 					if (uid != -1) {
 						script.append("# dhcp user\n");
 						script.append(
-								"$IP6TABLES -A droidwall-wifi -m owner --uid-owner ")
+								"$IP6TABLES -A $TAG-wifi -m owner --uid-owner ")
 								.append(uid).append(" -j RETURN || exit 80\n");
 
 					}
@@ -539,7 +506,7 @@ public final class Api {
 					if (uid != -1) {
 						script.append("# wifi user\n");
 						script.append(
-								"$IP6TABLES -A droidwall-wifi -m owner --uid-owner ")
+								"$IP6TABLES -A $TAG-wifi -m owner --uid-owner ")
 								.append(uid).append(" -j RETURN || exit 81\n");
 
 					}
@@ -547,7 +514,7 @@ public final class Api {
 				if (any_3g && ipv6enabled) {
 					if (blacklist) {
 						// block any application on this interface
-						script.append("$IP6TABLES -A droidwall-3g -j ")
+						script.append("$IP6TABLES -A $TAG-3g -j ")
 								.append(targetRule).append(" || exit 82\n");
 					}
 				} else {
@@ -556,7 +523,7 @@ public final class Api {
 						for (final Integer uid : uidsroaming) {
 							if (uid >= 0)
 								script.append(
-										"$IP6TABLES -I droidwall-3g -m owner --uid-owner ")
+										"$IP6TABLES -I $TAG-3g -m owner --uid-owner ")
 										.append(uid).append(" -j ")
 										.append(targetRule)
 										.append(" || exit 83\n");
@@ -565,18 +532,18 @@ public final class Api {
 						for (final Integer uid : uids3g) {
 							if (uid >= 0)
 								script.append(
-										"$IP6TABLES -I droidwall-3g -m owner --uid-owner ")
+										"$IP6TABLES -I $TAG-3g -m owner --uid-owner ")
 										.append(uid).append(" -j ")
 										.append(targetRule)
 										.append(" || exit 84\n");
 						}
 					}
 				}
-				script.append("$IP6TABLES -I droidwall-3g -m owner --uid-owner 9999 -j RETURN || exit 9999\n");
+				script.append("$IP6TABLES -I $TAG-3g -m owner --uid-owner 9999 -j RETURN || exit 9999\n");
 				if (any_wifi && ipv6enabled) {
 					if (blacklist) {
 						// block any application on this interface
-						script.append("$IP6TABLES -A droidwall-wifi -j ")
+						script.append("$IP6TABLES -A $TAG-wifi -j ")
 								.append(targetRule).append(" || exit 85\n");
 					}
 				} else {
@@ -584,7 +551,7 @@ public final class Api {
 					for (final Integer uid : uidsWifi) {
 						if (uid >= 0)
 							script.append(
-									"$IP6TABLES -A droidwall-wifi -m owner --uid-owner ")
+									"$IP6TABLES -A $TAG-wifi -m owner --uid-owner ")
 									.append(uid).append(" -j ")
 									.append(targetRule).append(" || exit 86\n");
 					}
@@ -593,36 +560,36 @@ public final class Api {
 					if (!any_3g) {
 						if (uids3g.indexOf(SPECIAL_UID_KERNEL) >= 0) {
 							script.append("# hack to allow kernel packets on white-list\n");
-							script.append("$IP6TABLES -A droidwall-3g -m owner --uid-owner 0:999999999 -j droidwall-reject || exit 87\n");
+							script.append("$IP6TABLES -A $TAG-3g -m owner --uid-owner 0:999999999 -j $TAG-reject || exit 87\n");
 						} else {
-							script.append("$IP6TABLES -A droidwall-3g -j droidwall-reject || exit 88\n");
+							script.append("$IP6TABLES -A $TAG-3g -j $TAG-reject || exit 88\n");
 						}
 					}
 					if (!any_wifi && ipv6enabled) {
 						if (uidsWifi.indexOf(SPECIAL_UID_KERNEL) >= 0) {
 							script.append("# hack to allow kernel packets on white-list\n");
-							script.append("$IP6TABLES -A droidwall-wifi -m owner --uid-owner 0:999999999 -j droidwall-reject || exit 89\n");
+							script.append("$IP6TABLES -A $TAG-wifi -m owner --uid-owner 0:999999999 -j $TAG-reject || exit 89\n");
 						} else {
-							script.append("$IP6TABLES -A droidwall-wifi -j droidwall-reject || exit 90\n");
+							script.append("$IP6TABLES -A $TAG-wifi -j $TAG-reject || exit 90\n");
 						}
 					}
 				} else {
 					if (uids3g.indexOf(SPECIAL_UID_KERNEL) >= 0) {
 						script.append("# hack to BLOCK kernel packets on black-list\n");
-						script.append("$IP6TABLES -A droidwall-3g -m owner --uid-owner 0:999999999 -j RETURN || exit 91\n");
-						script.append("$IP6TABLES -A droidwall-3g -j droidwall-reject || exit 92\n");
+						script.append("$IP6TABLES -A $TAG-3g -m owner --uid-owner 0:999999999 -j RETURN || exit 91\n");
+						script.append("$IP6TABLES -A $TAG-3g -j $TAG-reject || exit 92\n");
 					}
 					if (uidsWifi.indexOf(SPECIAL_UID_KERNEL) >= 0) {
 						script.append("# hack to BLOCK kernel packets on black-list\n");
-						script.append("$IP6TABLES -A droidwall-wifi -m owner --uid-owner 0:999999999 -j RETURN || exit 93\n");
-						script.append("$IP6TABLES -A droidwall-wifi -j droidwall-reject || exit 94\n");
+						script.append("$IP6TABLES -A $TAG-wifi -m owner --uid-owner 0:999999999 -j RETURN || exit 93\n");
+						script.append("$IP6TABLES -A $TAG-wifi -j $TAG-reject || exit 94\n");
 					}
 				}
 				if (vpnenabled && ipv6enabled) {
 					if (any_vpn && ipv6enabled) {
 						if (blacklist) {
 							// block any application on this interface
-							script.append("$IP6TABLES -A droidwall-vpn -j ")
+							script.append("$IP6TABLES -A $TAG-vpn -j ")
 									.append(targetRule).append(" || exit 82\n");
 						}
 					} else {
@@ -633,7 +600,7 @@ public final class Api {
 						for (final Integer uid : uidsvpn) {
 							if (uid >= 0)
 								script.append(
-										"$IP6TABLES -I droidwall-vpn -m owner --uid-owner ")
+										"$IP6TABLES -I $TAG-vpn -m owner --uid-owner ")
 										.append(uid).append(" -j ")
 										.append(targetRule)
 										.append(" || exit 84\n");
@@ -643,16 +610,16 @@ public final class Api {
 						if (!any_vpn) {
 							if (uidsvpn.indexOf(SPECIAL_UID_KERNEL) >= 0) {
 								script.append("# hack to allow kernel packets on white-list\n");
-								script.append("$IP6TABLES -A droidwall-vpn -m owner --uid-owner 0:999999999 -j droidwall-reject || exit 87\n");
+								script.append("$IP6TABLES -A $TAG-vpn -m owner --uid-owner 0:999999999 -j $TAG-reject || exit 87\n");
 							} else {
-								script.append("$IP6TABLES -A droidwall-vpn -j droidwall-reject || exit 88\n");
+								script.append("$IP6TABLES -A $TAG-vpn -j $TAG-reject || exit 88\n");
 							}
 						}
 					} else {
 						if (uidsvpn.indexOf(SPECIAL_UID_KERNEL) >= 0) {
 							script.append("# hack to BLOCK kernel packets on black-list\n");
-							script.append("$IP6TABLES -A droidwall-vpn -m owner --uid-owner 0:999999999 -j RETURN || exit 91\n");
-							script.append("$IP6TABLES -A droidwall-vpn -j droidwall-reject || exit 92\n");
+							script.append("$IP6TABLES -A $TAG-vpn -m owner --uid-owner 0:999999999 -j RETURN || exit 91\n");
+							script.append("$IP6TABLES -A $TAG-vpn -j $TAG-reject || exit 92\n");
 						}
 					}
 				}
@@ -907,18 +874,18 @@ public final class Api {
 					Api.PREFS_NAME, 0).getString(Api.PREF_CUSTOMSCRIPT2, "");
 			final StringBuilder script = new StringBuilder();
 			script.append(scriptHeader(ctx));
-			script.append("" + "$IPTABLES -F droidwall\n"
-					+ "$IPTABLES -F droidwall-reject\n"
-					+ "$IPTABLES -F droidwall-3g\n"
-					+ "$IPTABLES -F droidwall-vpn\n"
-					+ "$IPTABLES -F droidwall-wifi\n" + "");
+			script.append("" + "$IPTABLES -F $TAG\n"
+					+ "$IPTABLES -F $TAG-reject\n"
+					+ "$IPTABLES -F $TAG-3g\n"
+					+ "$IPTABLES -F $TAG-vpn\n"
+					+ "$IPTABLES -F $TAG-wifi\n" + "");
 			if (ipv6enabled) {
 				script.append(scriptHeader(ctx));
-				script.append("" + "$IP6TABLES --flush droidwall\n"
-						+ "$IP6TABLES --flush droidwall-reject\n"
-						+ "$IP6TABLES --flush droidwall-3g\n"
-						+ "$IP6TABLES --flush droidwall-vpn\n"
-						+ "$IP6TABLES --flush droidwall-wifi\n" + "");
+				script.append("" + "$IP6TABLES --flush $TAG\n"
+						+ "$IP6TABLES --flush $TAG-reject\n"
+						+ "$IP6TABLES --flush $TAG-3g\n"
+						+ "$IP6TABLES --flush $TAG-vpn\n"
+						+ "$IP6TABLES --flush $TAG-wifi\n" + "");
 			}
 			if (customScript.length() > 0) {
 				script.append("\n# BEGIN OF CUSTOM SCRIPT (user-defined)\n");
@@ -949,11 +916,11 @@ public final class Api {
 					Api.PREFS_NAME, 0).getString(Api.PREF_CUSTOMSCRIPT2, "");
 			final StringBuilder script = new StringBuilder();
 			script.append(scriptHeader(ctx));
-			script.append("" + "$IP6TABLES --flush droidwall\n"
-					+ "$IP6TABLES --flush droidwall-reject\n"
-					+ "$IP6TABLES --flush droidwall-3g\n"
-					+ "$IP6TABLES --flush droidwall-vpn\n"
-					+ "$IP6TABLES --flush droidwall-wifi\n" + "");
+			script.append("" + "$IP6TABLES --flush $TAG\n"
+					+ "$IP6TABLES --flush $TAG-reject\n"
+					+ "$IP6TABLES --flush $TAG-3g\n"
+					+ "$IP6TABLES --flush $TAG-vpn\n"
+					+ "$IP6TABLES --flush $TAG-wifi\n" + "");
 			if (customScript.length() > 0) {
 				script.append("\n# BEGIN OF CUSTOM SCRIPT (user-defined)\n");
 				script.append(customScript);
@@ -1410,11 +1377,7 @@ public final class Api {
 
 		@Override
 		protected Integer doInBackground(Object... params) {
-			try {
-				if (SU.available())
-					exitCode = 0;
-			} catch (Exception ex) {
-			}
+			exitCode = 0;
 			return exitCode;
 		}
 
@@ -1788,12 +1751,9 @@ public final class Api {
 			final StringBuilder resources = (StringBuilder) parameters[1];
 			final String[] commands = script.split("\n");
 			try {
-				// check for SU
-				if (!Shell.SU.available())
-					return exitcode;
 				if (script != null && script.length() > 0) {
 					// apply the rules
-					List<String> rules = Shell.SU.run(commands);
+					List<String> rules = Shell.INVOKE.run(commands);
 					if (rules != null && rules.size() > 0) {
 						for (String script2 : rules) {
 							resources.append(script2);

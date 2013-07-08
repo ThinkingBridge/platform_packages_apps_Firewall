@@ -94,11 +94,11 @@ public class PackageBroadcast extends BroadcastReceiver {
 	public void notifyUserOfAppInstall(Context context, String new_app_installed) {
 
 		final int notifyMsg = 2187;
-		int icon = R.drawable.notify_icon;
+		int icon = R.drawable.ic_firewall;
 		long time_stamp = new Date().getTime();
 		String notifyService = Context.NOTIFICATION_SERVICE;
-		Intent intent = new Intent(context, MainActivity.class);
-		CharSequence notifyname = "Open Android Firewall";
+		Intent intent = new Intent(context, FirewallActivity.class);
+		CharSequence notifyname = "Open ChaOS Firewall";
 
 		NotificationManager ManageNotification = (NotificationManager) context
 				.getSystemService(notifyService);

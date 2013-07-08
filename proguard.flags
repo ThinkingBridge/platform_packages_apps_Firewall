@@ -1,0 +1,6 @@
+# Keep all Fragments in this package, which are used by reflection.
+-keep class com.android.firewall.*
+-keep class eu.chainfire.libsuperuser.*
+
+# Keep click responders
+
