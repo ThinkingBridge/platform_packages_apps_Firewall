@@ -91,15 +91,15 @@ public final class Api {
 																		// shutdown
 	public static final String PREF_MODE = "BlockMode";
 	public static final String PREF_ENABLED = "Enabled";
-	public static final String PREF_VPNENABLED = "VpnEnabled";
-	public static final String PREF_ROAMENABLED = "RoamingEnabled";
-	public static final String PREF_LOGENABLED = "LogEnabled";
-	public static final String PREF_IP6TABLES = "IPv6Enabled";
+	public static final String PREF_VPNENABLED = "vpnsupport";
+	public static final String PREF_ROAMENABLED = "roamingsupport";
+	public static final String PREF_LOGENABLED = "logenabled";
+	public static final String PREF_IP6TABLES = "ipv6enabled";
 	public static final String PREF_REFRESH = "Enabled";
 	public static final String PREF_EXPORTNAME = "ExportName";
-	public static final String PREF_NOTIFY = "NotifyEnabled";
+	public static final String PREF_NOTIFY = "notifyenabled";
 	public static final String PREF_TASKERNOTIFY = "TaskerNotifyEnabled";
-	public static final String PREF_SDCARD = "SDCard";
+	public static final String PREF_SDCARD = "sdcard";
 
 	// Modes
 	public static final String MODE_WHITELIST = "whitelist";
@@ -262,7 +262,7 @@ public final class Api {
 			if (logenabled) {
 				script.append(""
 						+ "# Create the log and reject rules (ignore errors on the LOG target just in case it is not available)\n"
-						+ "$IPTABLES -A $TAG-reject -j LOG --log-prefix \"[AndroidFirewall] \" --log-level 4 --log-uid\n"
+						+ "$IPTABLES -A $TAG-reject -j LOG --log-prefix \"[ChaOSFirewall] \" --log-level 4 --log-uid\n"
 						+ "$IPTABLES -A $TAG-reject -j REJECT || exit 29\n"
 						+ "");
 			} else {
@@ -454,7 +454,7 @@ public final class Api {
 					if (logenabled && ipv6enabled) {
 						script.append(""
 								+ "# Create the log and reject rules (ignore errors on the LOG target just in case it is not available)\n"
-								+ "$IP6TABLES -A $TAG-reject -j LOG --log-prefix \"[AndroidFirewall] \" --log-level 4 --log-uid\n"
+								+ "$IP6TABLES -A $TAG-reject -j LOG --log-prefix \"[ChaOSFirewall] \" --log-level 4 --log-uid\n"
 								+ "$IP6TABLES -A $TAG-reject -j REJECT || exit 76\n"
 								+ "");
 					} else {
@@ -617,7 +617,7 @@ public final class Api {
 			code = runScriptAsRoot(ctx, script.toString(), res);
 			if (showErrors && code != 0) {
 				String msg = res.toString();
-				Log.e("AndroidFirewall", msg);
+				Log.e("ChaOSFirewall", msg);
 				// Remove unnecessary help message from output
 				if (msg.indexOf("\nTry `iptables -h' or 'iptables --help' for more information.") != -1) {
 					msg = msg
@@ -816,7 +816,7 @@ public final class Api {
 		boolean rules = false;
 		String filename = exportedName + "_af.rules";
 		File sdCard = Environment.getExternalStorageDirectory();
-		File dir = new File(sdCard.getAbsolutePath() + "/androidfirewall/");
+		File dir = new File(sdCard.getAbsolutePath() + "/firewall/");
 		dir.mkdirs();
 		File file = new File(dir, filename);
 
@@ -1001,7 +1001,7 @@ public final class Api {
 			StringBuilder res = new StringBuilder();
 			StringBuilder output = new StringBuilder();
 			int code = runScriptAsRoot(ctx, scriptHeader(ctx)
-					+ "dmesg | $GREP [AndroidFirewall]\n", res);
+					+ "dmesg | $GREP [ChaOSFirewall]\n", res);
 			if (code != 0) {
 				if (res.length() == 0) {
 					output.append(ctx.getString(R.string.log_empty));
@@ -1018,7 +1018,7 @@ public final class Api {
 			final HashMap<Integer, LogInfo> map = new HashMap<Integer, LogInfo>();
 			LogInfo loginfo = null;
 			while ((line = r.readLine()) != null) {
-				if (line.indexOf("[AndroidFirewall]") == -1)
+				if (line.indexOf("[ChaOSFirewall]") == -1)
 					continue;
 				appid = unknownUID;
 				if (((start = line.indexOf("UID=")) != -1)
