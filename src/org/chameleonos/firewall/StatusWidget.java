@@ -57,8 +57,7 @@ public class StatusWidget extends AppWidgetProvider {
 			}
 		} else if (Api.TOGGLE_REQUEST_MSG.equals(intent.getAction())) {
 			// Broadcast sent to request toggling firewall status
-			final SharedPreferences prefs = context.getSharedPreferences(
-					Api.PREFS_NAME, 0);
+			final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 			final boolean enabled = !prefs.getBoolean(Api.PREF_ENABLED, true);
 			//final String pwd = prefs.getString(Api.PREF_PASSWORD, "");
 			SharedPreferences prefs2 = PreferenceManager
@@ -77,7 +76,7 @@ public class StatusWidget extends AppWidgetProvider {
 			int[] ints) {
 		super.onUpdate(context, appWidgetManager, ints);
 
-		final SharedPreferences prefs = context.getSharedPreferences(Api.PREFS_NAME,  0);
+		final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 		boolean enabled = prefs.getBoolean(Api.PREF_ENABLED, true);
 		showWidget(context, appWidgetManager, ints, enabled);
 	}

@@ -73,7 +73,6 @@ public final class Api {
 	public static final int SPECIAL_UID_KERNEL = -11;
 
 	// Preferences
-	public static String PREFS_NAME = "AndroidFirewallPrefs";
 	public static String PREF_PROFILE = "DefaultProfile";
 	public static String PREF_PROFILE1 = "Profile1";
 	public static String PREF_PROFILE2 = "Profile2";
@@ -117,11 +116,8 @@ public final class Api {
 	// Messages
 	public static final String STATUS_CHANGED_MSG = "org.chameleonos.firewall.intent.action.STATUS_CHANGED";
 	public static final String TOGGLE_REQUEST_MSG = "org.chameleonos.firewall.intent.action.TOGGLE_REQUEST";
-	public static final String CUSTOM_SCRIPT_MSG = "org.chameleonos.firewall.intent.action.CUSTOM_SCRIPT";
 	// Message extras (parameters)
 	public static final String STATUS_EXTRA = "org.chameleonos.firewall.intent.extra.STATUS";
-	public static final String SCRIPT_EXTRA = "org.chameleonos.firewall.intent.extra.SCRIPT";
-	public static final String SCRIPT2_EXTRA = "org.chameleonos.firewall.intent.extra.SCRIPT2";
 	public static final String EXPORT_EXTRA = "org.chameleonos.firewall.intent.extra.EXPORT";
 
 	// Cached applications
@@ -218,7 +214,6 @@ public final class Api {
 		if (ctx == null) {
 			return false;
 		}
-		assertBinaries(ctx, showErrors);
 		final String ITFS_WIFI[] = { "tiwlan+", "wlan+", "eth+", "ra+",
 				"wlan0+", "eth0+" };
 		final String ITFS_3G[] = { "rmnet+", "pdp+", "ppp+", "uwbr+", "wimax+",
@@ -226,22 +221,16 @@ public final class Api {
 				"rmnet_sdio0+", "rmnet_sdio1+", "qmi+", "wwan0+", "svnet0+",
 				"rmnet0+", "cdma_rmnet+", "rmnet_usb0+", "rment_usb+" };
 		final String ITFS_VPN[] = { "tun+", "tun0+", "ppp+", "ppp0+", "bnep0" };
-		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, 0);
+		final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
 		final boolean whitelist = prefs.getString(PREF_MODE, MODE_WHITELIST)
 				.equals(MODE_WHITELIST);
 		final boolean blacklist = !whitelist;
-		final boolean logenabled = ctx.getSharedPreferences(PREFS_NAME, 0)
-				.getBoolean(PREF_LOGENABLED, false);
-		final boolean vpnenabled = ctx.getSharedPreferences(PREFS_NAME, 0)
-				.getBoolean(PREF_VPNENABLED, false);
-		final boolean roamenabled = ctx.getSharedPreferences(PREFS_NAME, 0)
-				.getBoolean(PREF_ROAMENABLED, false);
-		final boolean ipv6enabled = ctx.getSharedPreferences(PREFS_NAME, 0)
-				.getBoolean(PREF_IP6TABLES, false);
-		final boolean enabled = ctx.getSharedPreferences(PREFS_NAME, 0)
-				.getBoolean(PREF_ENABLED, false);
-		final String customScript = ctx.getSharedPreferences(Api.PREFS_NAME, 0)
-				.getString(Api.PREF_CUSTOMSCRIPT, "");
+		final boolean logenabled = prefs.getBoolean(PREF_LOGENABLED, false);
+		final boolean vpnenabled = prefs.getBoolean(PREF_VPNENABLED, false);
+		final boolean roamenabled = prefs.getBoolean(PREF_ROAMENABLED, false);
+		final boolean ipv6enabled = prefs.getBoolean(PREF_IP6TABLES, false);
+		final boolean enabled = prefs.getBoolean(PREF_ENABLED, false);
+		final String customScript =prefs.getString(Api.PREF_CUSTOMSCRIPT, "");
 
 		final StringBuilder script = new StringBuilder();
 		try {
@@ -683,7 +672,7 @@ public final class Api {
 		if (ctx == null) {
 			return false;
 		}
-		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, 0);
+		final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
 		final String savedUids_wifi = prefs.getString(PREF_WIFI_UIDS, "");
 		final String savedUids_3g = prefs.getString(PREF_3G_UIDS, "");
 		final String savedUids_roaming = prefs.getString(PREF_ROAMING_UIDS, "");
@@ -780,7 +769,7 @@ public final class Api {
 	 *            application context (mandatory)
 	 */
 	public static void saveRules(Context ctx) {
-		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, 0);
+		final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
 		final DroidApp[] apps = getApps(ctx);
 		// Builds a pipe-separated list of names
 		final StringBuilder newuids_wifi = new StringBuilder();
@@ -835,8 +824,7 @@ public final class Api {
 		try {
 			output = new ObjectOutputStream(new FileOutputStream(file));
 			saveRules(ctx);
-			SharedPreferences pref = ctx.getSharedPreferences(PREFS_NAME,
-					Context.MODE_PRIVATE);
+			SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
 			output.writeObject(pref.getAll());
 			rules = true;
 		} catch (IOException error) {
@@ -864,14 +852,13 @@ public final class Api {
 	 * @return true if the rules were purged
 	 */
 	public static boolean purgeIptables(Context ctx, boolean showErrors) {
-		final boolean ipv6enabled = ctx.getSharedPreferences(PREFS_NAME, 0)
+		final boolean ipv6enabled = PreferenceManager.getDefaultSharedPreferences(ctx)
 				.getBoolean(PREF_IP6TABLES, true);
 		final StringBuilder res = new StringBuilder();
 		try {
-			assertBinaries(ctx, showErrors);
 			// Custom "shutdown" script
-			final String customScript = ctx.getSharedPreferences(
-					Api.PREFS_NAME, 0).getString(Api.PREF_CUSTOMSCRIPT2, "");
+			final String customScript = PreferenceManager.getDefaultSharedPreferences(ctx)
+                    .getString(Api.PREF_CUSTOMSCRIPT2, "");
 			final StringBuilder script = new StringBuilder();
 			script.append(scriptHeader(ctx));
 			script.append("" + "$IPTABLES -F $TAG\n"
@@ -910,10 +897,9 @@ public final class Api {
 	public static boolean purgeIp6tables(Context ctx, boolean showErrors) {
 		final StringBuilder res = new StringBuilder();
 		try {
-			assertBinaries(ctx, showErrors);
 			// Custom "shutdown" script
-			final String customScript = ctx.getSharedPreferences(
-					Api.PREFS_NAME, 0).getString(Api.PREF_CUSTOMSCRIPT2, "");
+			final String customScript = PreferenceManager.getDefaultSharedPreferences(ctx)
+                    .getString(Api.PREF_CUSTOMSCRIPT2, "");
 			final StringBuilder script = new StringBuilder();
 			script.append(scriptHeader(ctx));
 			script.append("" + "$IP6TABLES --flush $TAG\n"
@@ -948,9 +934,9 @@ public final class Api {
 	 *            application context
 	 */
 	public static String showIptablesRules(Context ctx) {
-		final boolean ipv6enabled = ctx.getSharedPreferences(PREFS_NAME, 0)
+		final boolean ipv6enabled = PreferenceManager.getDefaultSharedPreferences(ctx)
 				.getBoolean(PREF_IP6TABLES, false);
-		final boolean enabled = ctx.getSharedPreferences(PREFS_NAME, 0)
+		final boolean enabled = PreferenceManager.getDefaultSharedPreferences(ctx)
 				.getBoolean(PREF_ENABLED, false);
 		try {
 			if (enabled && ipv6enabled) {
@@ -1135,7 +1121,7 @@ public final class Api {
 			// return cached instance
 			return applications;
 		}
-		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, 0);
+		final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
 		// allowed application names separated by pipe '|' (persisted)
 		final String savedUids_wifi = prefs.getString(PREF_WIFI_UIDS, "");
 		final String savedUids_3g = prefs.getString(PREF_3G_UIDS, "");
@@ -1411,8 +1397,6 @@ public final class Api {
 	 *            the script to be executed
 	 * @param res
 	 *            the script output response (stdout + stderr)
-	 * @param timeout
-	 *            timeout in milliseconds (-1 for none)
 	 * @return the script exit code
 	 * @throws IOException
 	 *             on any error executing the script, or writing it to disk
@@ -1432,8 +1416,6 @@ public final class Api {
 	 *            the script to be executed
 	 * @param res
 	 *            the script output response (stdout + stderr)
-	 * @param timeout
-	 *            timeout in milliseconds (-1 for none)
 	 * @return the script exit code
 	 * @throws IOException
 	 *             on any error executing the script, or writing it to disk
@@ -1441,42 +1423,6 @@ public final class Api {
 	public static int runScript(Context ctx, String script, StringBuilder res)
 			throws IOException {
 		return runScript(ctx, script, res, 40000, false);
-	}
-
-	/**
-	 * Asserts that the binary files are installed in the cache directory.
-	 * 
-	 * @param ctx
-	 *            context
-	 * @param showErrors
-	 *            indicates if errors should be alerted
-	 * @return false if the binary files could not be installed
-	 */
-	public static boolean assertBinaries(Context ctx, boolean showErrors) {
-		boolean changed = false;
-		try {
-			// Check iptables_armv5
-			File file = new File(ctx.getDir("bin", 0), "iptables_armv5");
-			if (!file.exists() || file.length() != 198652) {
-				copyRawFile(ctx, R.raw.iptables_armv5, file, "755");
-				changed = true;
-			}
-			// Check busybox
-			file = new File(ctx.getDir("bin", 0), "busybox_g1");
-			if (!file.exists()) {
-				copyRawFile(ctx, R.raw.busybox_g1, file, "755");
-				changed = true;
-			}
-			if (changed) {
-				Toast.makeText(ctx, R.string.toast_bin_installed,
-						Toast.LENGTH_LONG).show();
-			}
-		} catch (Exception e) {
-			if (showErrors)
-				alert(ctx, "Error installing binary files: " + e);
-			return false;
-		}
-		return true;
 	}
 
 	/**
@@ -1489,7 +1435,7 @@ public final class Api {
 	public static boolean isEnabled(Context ctx) {
 		if (ctx == null)
 			return false;
-		return ctx.getSharedPreferences(PREFS_NAME, 0).getBoolean(PREF_ENABLED,
+		return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(PREF_ENABLED,
 				false);
 	}
 
@@ -1518,7 +1464,7 @@ public final class Api {
 	public static void setEnabled(Context ctx, boolean enabled) {
 		if (ctx == null)
 			return;
-		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, 0);
+		final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
 		if (prefs.getBoolean(PREF_ENABLED, false) == enabled) {
 			return;
 		}
@@ -1537,7 +1483,7 @@ public final class Api {
 	public static void setIPv6Enabled(Context ctx, boolean ipv6enabled) {
 		if (ctx == null)
 			return;
-		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, 0);
+		final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
 		if (prefs.getBoolean("ipv6enabled", false) == ipv6enabled) {
 			return;
 		}
@@ -1560,7 +1506,7 @@ public final class Api {
 	 *            UID of the application that has been removed
 	 */
 	public static void applicationRemoved(Context ctx, int uid) {
-		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, 0);
+		final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
 		final Editor editor = prefs.edit();
 		// allowed application names separated by pipe '|' (persisted)
 		final String savedUids_wifi = prefs.getString(PREF_WIFI_UIDS, "");

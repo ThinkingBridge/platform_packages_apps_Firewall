@@ -39,7 +39,6 @@ import java.util.Map.Entry;
 
 import org.chameleonos.firewall.Api.DroidApp;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
@@ -85,14 +84,11 @@ import android.widget.Toast;
 
 import static android.app.Activity.RESULT_OK;
 
-import org.chameleonos.firewall.R;
-
 /**
  * Main application activity. This is the screen displayed when you open the
  * application
  */
 
-@SuppressLint("DefaultLocale")
 public class MainFragment extends Fragment implements
 		OnCheckedChangeListener, OnClickListener {
 
@@ -266,14 +262,6 @@ public class MainFragment extends Fragment implements
 	public void searchapps(){
 		final EditText filterText = (EditText) mLayout.findViewById(R.id.search);
 		filterText.addTextChangedListener(filterTextWatcher);
-//		filterText.post(new Runnable() {
-//			@Override
-//			public void run() {
-//				filterText.requestFocus();
-//				InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-//				imm.showSoftInput(filterText, InputMethodManager.SHOW_IMPLICIT);
-//			}
-//		});
 	}
 
 	/**
@@ -308,7 +296,7 @@ public class MainFragment extends Fragment implements
 	 * Check if the stored preferences are OK
 	 */
 	private void checkPreferences() {
-		final SharedPreferences prefs = getActivity().getSharedPreferences(Api.PREFS_NAME, 0);
+		final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		final Editor editor = prefs.edit();
 		boolean changed = false;
 		if (prefs.getString(Api.PREF_MODE, "").length() == 0) {
@@ -332,7 +320,7 @@ public class MainFragment extends Fragment implements
 	 * Refresh informative header
 	 */
 	private void refreshHeader() {
-		final SharedPreferences prefs = getActivity().getSharedPreferences(Api.PREFS_NAME, 0);
+		final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		final String mode = prefs.getString(Api.PREF_MODE, Api.MODE_WHITELIST);
 		final TextView labelmode = (TextView) mLayout
 				.findViewById(R.id.label_mode);
@@ -350,7 +338,7 @@ public class MainFragment extends Fragment implements
 	 * refresh the spinner
 	 */
 	private void refreshSpinner() {
-		final SharedPreferences prefs = getActivity().getSharedPreferences(Api.PREFS_NAME, 0);
+		final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		spinner.setSelection(prefs.getInt("itemPosition", 0));
 	}
 
@@ -368,8 +356,8 @@ public class MainFragment extends Fragment implements
 									int which) {
 								final String mode = (which == 0 ? Api.MODE_WHITELIST
 										: Api.MODE_BLACKLIST);
-								final Editor editor = getActivity().getSharedPreferences(
-										Api.PREFS_NAME, 0).edit();
+								final Editor editor = PreferenceManager.getDefaultSharedPreferences(getActivity())
+                                        .edit();
 								editor.putString(Api.PREF_MODE, mode);
 								editor.commit();
 								refreshHeader();
@@ -385,7 +373,6 @@ public class MainFragment extends Fragment implements
 	 */
 	private void setPassword(String pwd) {
 		final Resources res = getResources();
-		//final Editor editor = getSharedPreferences(Api.PREFS_NAME, 0).edit();
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(getActivity().getApplicationContext());
 		SharedPreferences.Editor editor = prefs.edit();
@@ -439,7 +426,6 @@ public class MainFragment extends Fragment implements
 	/**
 	 * Hash the password
 	 */
-
 	public static final String md5(final String s) {
 		try {
 			// Create MD5 Hash
@@ -468,7 +454,7 @@ public class MainFragment extends Fragment implements
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(ctx);
 		SharedPreferences.Editor editor = prefs.edit();
-		boolean vpnenabled = ctx.getSharedPreferences(Api.PREFS_NAME, 0)
+		boolean vpnenabled = prefs
 				.getBoolean(Api.PREF_VPNENABLED, false);
 		Button vpn = (Button) mLayout.findViewById(R.id.label_vpn);
 		if (vpnenabled) {
@@ -486,7 +472,7 @@ public class MainFragment extends Fragment implements
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(ctx);
 		SharedPreferences.Editor editor = prefs.edit();
-		boolean roamenabled = ctx.getSharedPreferences(Api.PREFS_NAME, 0)
+		boolean roamenabled = prefs
 				.getBoolean(Api.PREF_ROAMENABLED, false);
 		Button roam = (Button) mLayout.findViewById(R.id.label_roam);
 		if (roamenabled) {
@@ -504,15 +490,15 @@ public class MainFragment extends Fragment implements
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(ctx);
 		SharedPreferences.Editor editor = prefs.edit();
-		boolean ipv6support = ctx.getSharedPreferences(Api.PREFS_NAME, 0)
+		boolean ipv6support = prefs
 				.getBoolean(Api.PREF_IP6TABLES, false);
-		boolean logsupport = ctx.getSharedPreferences(Api.PREFS_NAME, 0)
+		boolean logsupport = prefs
 				.getBoolean(Api.PREF_LOGENABLED, false);
-		boolean notifysupport = ctx.getSharedPreferences(Api.PREFS_NAME, 0)
+		boolean notifysupport = prefs
 				.getBoolean(Api.PREF_NOTIFY, false);
-		boolean taskerenabled = ctx.getSharedPreferences(Api.PREFS_NAME, 0)
+		boolean taskerenabled = prefs
 				.getBoolean(Api.PREF_TASKERNOTIFY, false);
-		boolean sdcard = ctx.getSharedPreferences(Api.PREFS_NAME, 0)
+		boolean sdcard = prefs
 				.getBoolean(Api.PREF_SDCARD, false);
 		if (ipv6support) {
 			editor.putBoolean("ipv6enabled", true);
@@ -575,7 +561,7 @@ public class MainFragment extends Fragment implements
 					try {
 						progress.dismiss();
 					} catch (Exception ex) {
-						Log.d("Android Firewall - error in showorloadapplications",
+						Log.d("ChaOS Firewall - error in showorloadapplications",
 								ex.getMessage());
 					}
 					createListView(search);
@@ -621,12 +607,10 @@ public class MainFragment extends Fragment implements
 				boolean o1_selected;
 				boolean o2_selected;
 
-				boolean vpnenabled = getActivity().getApplicationContext()
-						.getSharedPreferences(Api.PREFS_NAME, 0).getBoolean(
-								Api.PREF_VPNENABLED, false);
-				boolean roamenabled = getActivity().getApplicationContext()
-						.getSharedPreferences(Api.PREFS_NAME, 0).getBoolean(
-								Api.PREF_ROAMENABLED, false);
+				boolean vpnenabled = PreferenceManager.getDefaultSharedPreferences(getActivity())
+                        .getBoolean(Api.PREF_VPNENABLED, false);
+				boolean roamenabled = PreferenceManager.getDefaultSharedPreferences(getActivity())
+                        .getBoolean(Api.PREF_ROAMENABLED, false);
 
 				if (vpnenabled && !roamenabled) {
 					o1_selected = o1.selected_3g || o1.selected_wifi
@@ -681,11 +665,11 @@ public class MainFragment extends Fragment implements
 				return 1;
 			}
 		});
-		// try {
+
 		final LayoutInflater inflater = getActivity().getLayoutInflater();
 		ListAdapter adapter = new ArrayAdapter<DroidApp>(getActivity(),
 				R.layout.listitem, R.id.itemtext, apps) {
-			SharedPreferences prefs = getActivity().getSharedPreferences(Api.PREFS_NAME, 0);
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 			boolean vpnenabled = prefs.getBoolean(Api.PREF_VPNENABLED, false);
 			boolean roamenabled = prefs.getBoolean(Api.PREF_ROAMENABLED, false);
 
@@ -697,7 +681,7 @@ public class MainFragment extends Fragment implements
 					// Inflate a new view
 					convertView = inflater.inflate(R.layout.listitem, parent,
 							false);
-					Log.d("Android Firewall", ">> inflate(" + convertView + ")");
+					Log.d("ChaOS Firewall", ">> inflate(" + convertView + ")");
 					entry = new ListEntry();
 					entry.box_wifi = (CheckBox) convertView
 							.findViewById(R.id.itemcheck_wifi);
@@ -773,13 +757,7 @@ public class MainFragment extends Fragment implements
 		} else {
 			this.listview.setAdapter(adapter);
 		}
-		/*
-		 * } catch (Exception e) { Log.d("Null pointer on listview",
-		 * e.getMessage()); e.printStackTrace();
-		 */
 	}
-
-	// }
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -798,9 +776,6 @@ public class MainFragment extends Fragment implements
 			return true;
 		case R.id.setpwd:
 			setPassword();
-			return true;
-		case R.id.showrules:
-			showRules();
 			return true;
 		case R.id.exportrules:
 			exportRules();
@@ -838,7 +813,7 @@ public class MainFragment extends Fragment implements
 	 */
 	private void disableOrEnable() {
 		final boolean enabled = !Api.isEnabled(getActivity());
-		Log.d("Android Firewall", "Changing enabled status to: " + enabled);
+		Log.d("ChaOS Firewall", "Changing enabled status to: " + enabled);
 		Api.setEnabled(getActivity(), enabled);
 		if (enabled) {
 			applyOrSaveRules();
@@ -908,13 +883,13 @@ public class MainFragment extends Fragment implements
 		Intent intent = new Intent();
 		intent.setClass(getActivity(), RulesDialog.class);
 		File filepath = new File(Environment.getExternalStorageDirectory()
-				.getAbsolutePath() + "/androidfirewall/");
+				.getAbsolutePath() + "/firewall/");
 		if (filepath.isDirectory()) {
 			startActivityForResult(intent, IMPORT_RULES_REQUEST);
 		} else {
 			Toast.makeText(
 					getActivity(),
-					"There is an error accessing the androidfirewall directory. Please export a rules file first.",
+					"There is an error accessing the firewall directory. Please export a rules file first.",
 					Toast.LENGTH_LONG).show();
 		}
 
@@ -933,7 +908,7 @@ public class MainFragment extends Fragment implements
 			// We can only read the media
 			Toast.makeText(
 					getActivity(),
-					"There is an error accessing the androidfirewall directory. Please check that your SDcard is mounted or external storage is accessible.",
+					"There is an error accessing the firewall directory. Please check that your SDcard is mounted or external storage is accessible.",
 					Toast.LENGTH_LONG).show();
 		} else {
 			// Something else is wrong. It may be one of many other states, but
@@ -941,7 +916,7 @@ public class MainFragment extends Fragment implements
 			// to know is we can neither read nor write
 			Toast.makeText(
 					getActivity(),
-					"There is an error accessing the androidfirewall directory. Please check that your SDcard is mounted or external storage is accessible.",
+					"There is an error accessing the firewall directory. Please check that your SDcard is mounted or external storage is accessible.",
 					Toast.LENGTH_LONG).show();
 		}
 
@@ -952,50 +927,16 @@ public class MainFragment extends Fragment implements
 		Intent intent = new Intent();
 		intent.setClass(getActivity(), DeleteRulesDialog.class);
 		File filepath = new File(Environment.getExternalStorageDirectory()
-				.getAbsolutePath() + "/androidfirewall/");
+				.getAbsolutePath() + "/firewall/");
 		if (filepath.isDirectory()) {
 			startActivityForResult(intent, MANAGE_RULES_REQUEST);
 		} else {
 			Toast.makeText(
 					getActivity(),
-					"There is an error accessing the androidfirewall directory. Please export a rules file first.",
+					"There is an error accessing the firewall directory. Please export a rules file first.",
 					Toast.LENGTH_LONG).show();
 		}
 
-	}
-
-	// open save profiles dialog
-	public void saveProfile() {
-		Intent intent = new Intent();
-		intent.setClass(getActivity(), SaveProfileDialog.class);
-		File filepath = new File(Environment.getExternalStorageDirectory()
-				.getAbsolutePath() + "/androidfirewall/");
-		if (filepath.isDirectory()) {
-			startActivityForResult(intent, 0);
-		} else {
-			Toast.makeText(
-					getActivity(),
-					"There is an error accessing the androidfirewall directory. Please export a rules file first.",
-					Toast.LENGTH_LONG).show();
-		}
-
-	}
-
-	// open load profile dialog
-
-	public void selectProfile() {
-		Intent intent = new Intent();
-		intent.setClass(getActivity(), LoadProfile.class);
-		File filepath = new File(Environment.getExternalStorageDirectory()
-				.getAbsolutePath() + "/androidfirewall/");
-		if (filepath.isDirectory()) {
-			startActivityForResult(intent, LOAD_PROFILE_REQUEST);
-		} else {
-			Toast.makeText(
-					getActivity(),
-					"There is an error accessing the androidfirewall directory. Please export a rules file first.",
-					Toast.LENGTH_LONG).show();
-		}
 	}
 
 	// set Request Code for Rules Import
@@ -1010,8 +951,6 @@ public class MainFragment extends Fragment implements
 	static final int EDIT_PROFILE_REQUEST = 50;
 	// set Request Code for User Settings
 	static final int USER_SETTINGS_REQUEST = 60;
-	//set Request Code for Language Change
-	static final int CHANGE_LANGUAGE_REQUEST = 70;
 
 	// @Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -1069,19 +1008,6 @@ public class MainFragment extends Fragment implements
 			Api.changeLanguage(context, language);
 			startActivity(intent);
 		}
-		// for debugging purposes
-		// if (resultCode == RESULT_CANCELED)
-		// Toast.makeText(this, "Operation Canceled",
-		// Toast.LENGTH_SHORT).show();
-	}
-
-	/**
-	 * Show iptable rules on a dialog
-	 */
-	private void showRules() {
-		Intent intent = new Intent();
-		intent.setClass(getActivity(), ShowRules.class);
-		startActivityForResult(intent, 0);
 	}
 
 	/**
@@ -1104,7 +1030,7 @@ public class MainFragment extends Fragment implements
 				} catch (Exception ex) {
 				}
 				if (enabled) {
-					Log.d("Android Firewall", "Applying rules.");
+					Log.d("ChaOS Firewall", "Applying rules.");
 					if (Api.applyIptablesRules(getActivity(), true)) {
 						Toast.makeText(getActivity(),
 								R.string.rules_applied, Toast.LENGTH_SHORT)
@@ -1138,7 +1064,7 @@ public class MainFragment extends Fragment implements
 							saveProfile5();
 						}
 					} else {
-						Log.d("Android Firewall",
+						Log.d("ChaOS Firewall",
 								"Failed - Disabling firewall.");
 						Api.setEnabled(getActivity(), false);
 						if (mMenu != null) {
@@ -1155,7 +1081,7 @@ public class MainFragment extends Fragment implements
 				}
 
 				else {
-					Log.d("Android Firewall", "Saving rules.");
+					Log.d("ChaOS Firewall", "Saving rules.");
 					Api.saveRules(getActivity());
 					Toast.makeText(getActivity(), R.string.rules_saved,
 							Toast.LENGTH_SHORT).show();
@@ -1320,8 +1246,7 @@ public class MainFragment extends Fragment implements
 	}
 
 	private void clearAllEntries() {
-		SharedPreferences prefs = getActivity().getSharedPreferences(Api.PREFS_NAME,
-				Context.MODE_PRIVATE);
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		boolean vpnenabled = prefs.getBoolean(Api.PREF_VPNENABLED, false);
 		boolean roamenabled = prefs.getBoolean(Api.PREF_ROAMENABLED, false);
 		BaseAdapter adapter = (BaseAdapter) listview.getAdapter();
@@ -1414,7 +1339,7 @@ public class MainFragment extends Fragment implements
 				// "app"
 				return viewToUpdate;
 			} catch (Exception e) {
-				Log.e("Android Firewall", "Error loading icon", e);
+				Log.e("ChaOS Firewall", "Error loading icon", e);
 				return null;
 			}
 		}
@@ -1429,7 +1354,7 @@ public class MainFragment extends Fragment implements
 				entryToUpdate.icon
 						.setImageDrawable(entryToUpdate.app.cached_icon);
 			} catch (Exception e) {
-				Log.e("Android Firewall", "Error showing icon", e);
+				Log.e("ChaOS Firewall", "Error showing icon", e);
 			}
 		};
 	}
@@ -1448,8 +1373,7 @@ public class MainFragment extends Fragment implements
 	}
 
 	private void LoadDefaultProfile() {
-		SharedPreferences prefs = getActivity().getSharedPreferences(Api.PREFS_NAME,
-				Context.MODE_PRIVATE);
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		final SharedPreferences prefs2 = getActivity().getSharedPreferences(Api.PREF_PROFILE,
 				Context.MODE_PRIVATE);
 		final Editor editRules = prefs.edit();
@@ -1502,8 +1426,7 @@ public class MainFragment extends Fragment implements
 	}
 
 	private void LoadProfile1() {
-		SharedPreferences prefs = getActivity().getSharedPreferences(Api.PREFS_NAME,
-				Context.MODE_PRIVATE);
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		final SharedPreferences prefs2 = getActivity().getSharedPreferences(
 				Api.PREF_PROFILE1, Context.MODE_PRIVATE);
 		final Editor editRules = prefs.edit();
@@ -1556,8 +1479,7 @@ public class MainFragment extends Fragment implements
 	}
 
 	private void LoadProfile2() {
-		SharedPreferences prefs = getActivity().getSharedPreferences(Api.PREFS_NAME,
-				Context.MODE_PRIVATE);
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		final SharedPreferences prefs2 = getActivity().getSharedPreferences(
 				Api.PREF_PROFILE2, Context.MODE_PRIVATE);
 		final Editor editRules = prefs.edit();
@@ -1610,8 +1532,7 @@ public class MainFragment extends Fragment implements
 	}
 
 	private void LoadProfile3() {
-		SharedPreferences prefs = getActivity().getSharedPreferences(Api.PREFS_NAME,
-				Context.MODE_PRIVATE);
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		final SharedPreferences prefs2 = getActivity().getSharedPreferences(
 				Api.PREF_PROFILE3, Context.MODE_PRIVATE);
 		final Editor editRules = prefs.edit();
@@ -1664,8 +1585,7 @@ public class MainFragment extends Fragment implements
 	}
 
 	private void LoadProfile4() {
-		SharedPreferences prefs = getActivity().getSharedPreferences(Api.PREFS_NAME,
-				Context.MODE_PRIVATE);
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		final SharedPreferences prefs2 = getActivity().getSharedPreferences(
 				Api.PREF_PROFILE4, Context.MODE_PRIVATE);
 		final Editor editRules = prefs.edit();
@@ -1718,8 +1638,7 @@ public class MainFragment extends Fragment implements
 	}
 
 	private void LoadProfile5() {
-		SharedPreferences prefs = getActivity().getSharedPreferences(Api.PREFS_NAME,
-				Context.MODE_PRIVATE);
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		final SharedPreferences prefs2 = getActivity().getSharedPreferences(
 				Api.PREF_PROFILE5, Context.MODE_PRIVATE);
 		final Editor editRules = prefs.edit();
@@ -1772,8 +1691,7 @@ public class MainFragment extends Fragment implements
 	}
 
 	private void saveDefaultProfile() {
-		SharedPreferences prefs2 = getActivity().getSharedPreferences(Api.PREFS_NAME,
-				Context.MODE_PRIVATE);
+		SharedPreferences prefs2 = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		final SharedPreferences prefs = getActivity().getSharedPreferences(Api.PREF_PROFILE,
 				Context.MODE_PRIVATE);
 		final Editor editRules = prefs.edit();
@@ -1796,8 +1714,7 @@ public class MainFragment extends Fragment implements
 	}
 
 	private void saveProfile1() {
-		SharedPreferences prefs2 = getActivity().getSharedPreferences(Api.PREFS_NAME,
-				Context.MODE_PRIVATE);
+		SharedPreferences prefs2 = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		final SharedPreferences prefs = getActivity().getSharedPreferences(Api.PREF_PROFILE1,
 				Context.MODE_PRIVATE);
 		final Editor editRules = prefs.edit();
@@ -1820,8 +1737,7 @@ public class MainFragment extends Fragment implements
 	}
 
 	private void saveProfile2() {
-		SharedPreferences prefs2 = getActivity().getSharedPreferences(Api.PREFS_NAME,
-				Context.MODE_PRIVATE);
+		SharedPreferences prefs2 = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		final SharedPreferences prefs = getActivity().getSharedPreferences(Api.PREF_PROFILE2,
 				Context.MODE_PRIVATE);
 		final Editor editRules = prefs.edit();
@@ -1844,8 +1760,7 @@ public class MainFragment extends Fragment implements
 	}
 
 	private void saveProfile3() {
-		SharedPreferences prefs2 = getActivity().getSharedPreferences(Api.PREFS_NAME,
-				Context.MODE_PRIVATE);
+		SharedPreferences prefs2 = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		final SharedPreferences prefs = getActivity().getSharedPreferences(Api.PREF_PROFILE3,
 				Context.MODE_PRIVATE);
 		final Editor editRules = prefs.edit();
@@ -1868,8 +1783,7 @@ public class MainFragment extends Fragment implements
 	}
 
 	private void saveProfile4() {
-		SharedPreferences prefs2 = getActivity().getSharedPreferences(Api.PREFS_NAME,
-				Context.MODE_PRIVATE);
+		SharedPreferences prefs2 = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		final SharedPreferences prefs = getActivity().getSharedPreferences(Api.PREF_PROFILE4,
 				Context.MODE_PRIVATE);
 		final Editor editRules = prefs.edit();
@@ -1892,8 +1806,7 @@ public class MainFragment extends Fragment implements
 	}
 
 	private void saveProfile5() {
-		SharedPreferences prefs2 = getActivity().getSharedPreferences(Api.PREFS_NAME,
-				Context.MODE_PRIVATE);
+		SharedPreferences prefs2 = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		final SharedPreferences prefs = getActivity().getSharedPreferences(Api.PREF_PROFILE5,
 				Context.MODE_PRIVATE);
 		final Editor editRules = prefs.edit();

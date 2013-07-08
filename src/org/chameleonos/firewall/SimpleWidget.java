@@ -64,8 +64,7 @@ public class SimpleWidget extends AppWidgetProvider {
 			}
 		} else if (Api.TOGGLE_REQUEST_MSG.equals(intent.getAction())) {
 			// Broadcast sent to request toggling firewall status
-			final SharedPreferences prefs = context.getSharedPreferences(
-					Api.PREFS_NAME, 0);
+			final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 			final boolean enabled = !prefs.getBoolean(Api.PREF_ENABLED, true);
 			//final String pwd = prefs.getString(Api.PREF_PASSWORD, "");
 			SharedPreferences prefs2 = PreferenceManager
@@ -117,8 +116,7 @@ public class SimpleWidget extends AppWidgetProvider {
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager,
 			int[] ints) {
 		super.onUpdate(context, appWidgetManager, ints);
-		final SharedPreferences prefs = context.getSharedPreferences(
-				Api.PREFS_NAME, 0);
+		final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 		boolean enabled = prefs.getBoolean(Api.PREF_ENABLED, true);
 		showWidget(context, appWidgetManager, ints, enabled);
 	}
@@ -127,7 +125,7 @@ public class SimpleWidget extends AppWidgetProvider {
 			int[] widgetIds, boolean enabled) {
 		final RemoteViews views = new RemoteViews(context.getPackageName(),
 				R.layout.simple_widget);
-		final int iconId = enabled ? R.drawable.widget_on2
+		final int iconId = enabled ? R.drawable.widget_on
 				: R.drawable.widget_off;
 		views.setImageViewResource(R.id.simplewidget, iconId);
 

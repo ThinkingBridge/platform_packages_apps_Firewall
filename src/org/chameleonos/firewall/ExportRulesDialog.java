@@ -23,6 +23,7 @@
  */
 package org.chameleonos.firewall;
 
+import android.preference.PreferenceManager;
 import org.chameleonos.firewall.R;
 
 import android.app.Activity;
@@ -52,7 +53,7 @@ public class ExportRulesDialog extends Activity implements OnClickListener {
 				.setOnClickListener(this);
 		((Button) view.findViewById(R.id.exportrules_cancel))
 				.setOnClickListener(this);
-		final SharedPreferences prefs = getSharedPreferences(Api.PREFS_NAME, 0);
+		final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		this.user_input = (EditText) view.findViewById(R.id.exportrules);
 		this.user_input.setText(prefs.getString(Api.PREF_EXPORTNAME, ""));
 		setTitle(R.string.enterfilename);

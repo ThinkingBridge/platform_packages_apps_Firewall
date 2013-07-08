@@ -26,6 +26,7 @@ package org.chameleonos.firewall;
 
 import java.util.Date;
 
+import android.preference.PreferenceManager;
 import org.chameleonos.firewall.R;
 
 import android.Manifest;
@@ -67,8 +68,7 @@ public class PackageBroadcast extends BroadcastReceiver {
 				// Force app list reload next time
 				Api.applications = null;
 				// check to see if Notifications are enabled
-				SharedPreferences prefs = context.getSharedPreferences(
-						Api.PREFS_NAME, 0);
+				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 				boolean NotifyEnabled = prefs
 						.getBoolean(Api.PREF_NOTIFY, false);
 				if (NotifyEnabled) {

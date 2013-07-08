@@ -30,6 +30,7 @@ import java.io.ObjectInputStream;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import android.preference.PreferenceManager;
 import org.chameleonos.firewall.R;
 
 import android.app.ListActivity;
@@ -76,8 +77,7 @@ public class RulesDialog extends ListActivity {
 	@Override
 	@SuppressWarnings("unchecked")
 	protected void onListItemClick(ListView items, View v, int position, long id) {
-		final SharedPreferences prefs = getSharedPreferences(Api.PREFS_NAME,
-				Context.MODE_PRIVATE);
+		final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		File file = new File(filepath + "/"
 				+ getListAdapter().getItem(position));
 		ObjectInputStream input = null;

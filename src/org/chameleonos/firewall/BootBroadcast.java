@@ -28,6 +28,7 @@ package org.chameleonos.firewall;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.preference.PreferenceManager;
 
 /**
  * Broadcast receiver that set iptables rules on system startup. This is
@@ -38,7 +39,7 @@ public class BootBroadcast extends BroadcastReceiver {
 	@Override
 	public void onReceive(final Context context, final Intent intent) {
 		if ("android.intent.action.BOOT_COMPLETED".equals(intent.getAction())) {
-			boolean sdcard = context.getSharedPreferences(Api.PREFS_NAME, 0)
+			boolean sdcard = PreferenceManager.getDefaultSharedPreferences(context)
 					.getBoolean(Api.PREF_SDCARD, false);
 			if (sdcard) {
 				// do nothing

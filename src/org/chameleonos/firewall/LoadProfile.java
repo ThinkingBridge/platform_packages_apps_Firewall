@@ -99,8 +99,7 @@ public class LoadProfile extends Activity implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		if (v.getId() == R.id.defaultprofile) {
-			SharedPreferences prefs = getSharedPreferences(Api.PREFS_NAME,
-					Context.MODE_PRIVATE);
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 			final SharedPreferences prefs2 = getSharedPreferences(
 					Api.PREF_PROFILE, Context.MODE_PRIVATE);
 			final Editor editRules = prefs.edit();
@@ -128,8 +127,7 @@ public class LoadProfile extends Activity implements OnClickListener {
 			return;
 		}
 		if (v.getId() == R.id.profile1) {
-			SharedPreferences prefs = getSharedPreferences(Api.PREFS_NAME,
-					Context.MODE_PRIVATE);
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 			final SharedPreferences prefs2 = getSharedPreferences(
 					Api.PREF_PROFILE1, Context.MODE_PRIVATE);
 			final Editor editRules = prefs.edit();
@@ -157,8 +155,7 @@ public class LoadProfile extends Activity implements OnClickListener {
 			return;
 		}
 		if (v.getId() == R.id.profile2) {
-			SharedPreferences prefs = getSharedPreferences(Api.PREFS_NAME,
-					Context.MODE_PRIVATE);
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 			final SharedPreferences prefs2 = getSharedPreferences(
 					Api.PREF_PROFILE2, Context.MODE_PRIVATE);
 			final Editor editRules = prefs.edit();
@@ -186,8 +183,7 @@ public class LoadProfile extends Activity implements OnClickListener {
 			return;
 		}
 		if (v.getId() == R.id.profile3) {
-			SharedPreferences prefs = getSharedPreferences(Api.PREFS_NAME,
-					Context.MODE_PRIVATE);
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 			final SharedPreferences prefs2 = getSharedPreferences(
 					Api.PREF_PROFILE3, Context.MODE_PRIVATE);
 			final Editor editRules = prefs.edit();
@@ -215,8 +211,7 @@ public class LoadProfile extends Activity implements OnClickListener {
 			return;
 		}
 		if (v.getId() == R.id.profile4) {
-			SharedPreferences prefs = getSharedPreferences(Api.PREFS_NAME,
-					Context.MODE_PRIVATE);
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 			final SharedPreferences prefs2 = getSharedPreferences(
 					Api.PREF_PROFILE4, Context.MODE_PRIVATE);
 			final Editor editRules = prefs.edit();
@@ -244,8 +239,7 @@ public class LoadProfile extends Activity implements OnClickListener {
 			return;
 		}
 		if (v.getId() == R.id.profile5) {
-			SharedPreferences prefs = getSharedPreferences(Api.PREFS_NAME,
-					Context.MODE_PRIVATE);
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 			final SharedPreferences prefs2 = getSharedPreferences(
 					Api.PREF_PROFILE5, Context.MODE_PRIVATE);
 			final Editor editRules = prefs.edit();

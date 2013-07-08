@@ -24,6 +24,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.MenuItem;
@@ -84,16 +85,28 @@ public class FirewallActivity extends Activity {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
+
+
+        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("first_run", true)) {
+            mDrawerLayout.openDrawer(mDrawerList);
+            PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("first_run", false).commit();
+        }
 	}
 	
 	private void setupNavItems() {
 		mNavItems = new ArrayList<NavigationDrawerItem>();
-		mNavItems.add(new NavigationDrawerItem(MainFragment.class.getName(), "Firewall", Type.Fragment, R.drawable.ic_firewall));
-		mNavItems.add(new NavigationDrawerItem(LogFragment.class.getName(), "Log", Type.Fragment, R.drawable.ic_log));
-		mNavItems.add(new NavigationDrawerItem(ShowRulesFragment.class.getName(), "View Rules", Type.Fragment, R.drawable.ic_show_rules));
-		mNavItems.add(new NavigationDrawerItem(ProfilesFragment.class.getName(), "Profiles", Type.Fragment, R.drawable.ic_profiles));
-		mNavItems.add(new NavigationDrawerItem(HelpFragment.class.getName(), "Help", Type.Fragment, R.drawable.ic_help));
-		mNavItems.add(new NavigationDrawerItem(SettingsFragment.class.getName(), "Settings", Type.Fragment, R.drawable.ic_settings));
+		mNavItems.add(new NavigationDrawerItem(MainFragment.class.getName(),
+                getString(R.string.firewall_fragment_title), Type.Fragment, R.drawable.ic_firewall));
+		mNavItems.add(new NavigationDrawerItem(LogFragment.class.getName(),
+                getString(R.string.log_fragment_title), Type.Fragment, R.drawable.ic_log));
+		mNavItems.add(new NavigationDrawerItem(ShowRulesFragment.class.getName(),
+                getString(R.string.rules_fragment_title), Type.Fragment, R.drawable.ic_show_rules));
+		mNavItems.add(new NavigationDrawerItem(ProfilesFragment.class.getName(),
+                getString(R.string.profiles_fragment_title), Type.Fragment, R.drawable.ic_profiles));
+		mNavItems.add(new NavigationDrawerItem(HelpFragment.class.getName(),
+                getString(R.string.help_fragment_title), Type.Fragment, R.drawable.ic_help));
+		mNavItems.add(new NavigationDrawerItem(SettingsFragment.class.getName(),
+                getString(R.string.settings_fragment_title), Type.Fragment, R.drawable.ic_settings));
 		// Set the adapter for the list view
 		mDrawerList.setAdapter(new NavigationAdapter());
 		selectItem(0);

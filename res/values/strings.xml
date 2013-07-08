@@ -147,17 +147,25 @@
     <string name="apply_setting_changes">Applying rules for setting change</string>
     <string name="rules_export_successfully">The rules have been exported successfully</string>
     <string name="rules_import_successfully">The rules have been imported successfully</string>
-    <string name="no_rules_file">There is an error accessing the androidfirewall directory. Please export a rules file first</string>
-    <string name="no_storage">There is an error accessing the androidfirewall directory. Please check that your SDcard is mounted or external storage is accessible.</string>
+    <string name="no_rules_file">There is an error accessing the firewall directory. Please export a rules file first</string>
+    <string name="no_storage">There is an error accessing the firewall directory. Please check that your SDcard is mounted or external storage is accessible.</string>
     <string name="file_deleted">The file has been deleted.</string>
     <string name="widget_fail">Cannot disable the firewall. It is password protected.</string>
     <string name="error_no_root">ChaOS Firewall has not been granted root access!</string>
     <string name="languageSupport">Languages</string>
-    <string name="simplewidget">On/Off Widget</string>
-    <string name="statuswidget">Menu Widget</string>
+    <string name="simplewidget">Firewall On/Off Widget</string>
+    <string name="statuswidget">Firewall Menu Widget</string>
     <string name="sdcard_title">Apps on SDCard Support</string>
     <string name="sdcard_summary">This setting makes the app wait for the SDCard scan to be finished before applying rules after reboot.  This is needed if you have apps that require data access and you moved them to the SDCard.  Please note that this increases the time it takes for the rules to be applied after a reboot.</string>
     <string name="log_empty">Log is empty</string>
     <string name="log_title">Firewall logs</string>
+
+    <!-- Fragment titles -->
+    <string name="firewall_fragment_title">Firewall</string>
+    <string name="log_fragment_title">Log</string>
+    <string name="rules_fragment_title">View rules</string>
+    <string name="profiles_fragment_title">Edit profiles</string>
+    <string name="help_fragment_title">Help</string>
+    <string name="settings_fragment_title">Settings</string>
 
 </resources>

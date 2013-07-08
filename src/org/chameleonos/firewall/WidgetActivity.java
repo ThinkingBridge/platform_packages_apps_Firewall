@@ -119,8 +119,7 @@ public class WidgetActivity extends Activity implements OnClickListener {
 			finish();
 		}
 		if (v.getId() == R.id.disableFirewall) {
-			final SharedPreferences prefs = getApplicationContext()
-					.getSharedPreferences(Api.PREFS_NAME, 0);
+			final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 			final boolean enabled = !prefs.getBoolean(Api.PREF_ENABLED, true);
 			SharedPreferences prefs2 = PreferenceManager
 					.getDefaultSharedPreferences(getApplicationContext());
@@ -142,8 +141,7 @@ public class WidgetActivity extends Activity implements OnClickListener {
 			finish();
 		}
 		if (v.getId() == R.id.DefaultProfile) {
-			SharedPreferences prefs = getApplicationContext()
-					.getSharedPreferences(Api.PREFS_NAME, Context.MODE_PRIVATE);
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 			final SharedPreferences prefs2 = getApplicationContext()
 					.getSharedPreferences(Api.PREF_PROFILE,
 							Context.MODE_PRIVATE);
@@ -190,8 +188,7 @@ public class WidgetActivity extends Activity implements OnClickListener {
 			finish();
 		}
 		if (v.getId() == R.id.Profile1) {
-			SharedPreferences prefs = getApplicationContext()
-					.getSharedPreferences(Api.PREFS_NAME, Context.MODE_PRIVATE);
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 			final SharedPreferences prefs2 = getApplicationContext()
 					.getSharedPreferences(Api.PREF_PROFILE1,
 							Context.MODE_PRIVATE);
@@ -238,8 +235,7 @@ public class WidgetActivity extends Activity implements OnClickListener {
 			finish();
 		}
 		if (v.getId() == R.id.Profile2) {
-			SharedPreferences prefs = getApplicationContext()
-					.getSharedPreferences(Api.PREFS_NAME, Context.MODE_PRIVATE);
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 			final SharedPreferences prefs2 = getApplicationContext()
 					.getSharedPreferences(Api.PREF_PROFILE2,
 							Context.MODE_PRIVATE);
@@ -286,8 +282,7 @@ public class WidgetActivity extends Activity implements OnClickListener {
 			finish();
 		}
 		if (v.getId() == R.id.Profile3) {
-			SharedPreferences prefs = getApplicationContext()
-					.getSharedPreferences(Api.PREFS_NAME, Context.MODE_PRIVATE);
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 			final SharedPreferences prefs2 = getApplicationContext()
 					.getSharedPreferences(Api.PREF_PROFILE3,
 							Context.MODE_PRIVATE);
@@ -334,8 +329,7 @@ public class WidgetActivity extends Activity implements OnClickListener {
 			finish();
 		}
 		if (v.getId() == R.id.Profile4) {
-			SharedPreferences prefs = getApplicationContext()
-					.getSharedPreferences(Api.PREFS_NAME, Context.MODE_PRIVATE);
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 			final SharedPreferences prefs2 = getApplicationContext()
 					.getSharedPreferences(Api.PREF_PROFILE4,
 							Context.MODE_PRIVATE);
@@ -382,8 +376,7 @@ public class WidgetActivity extends Activity implements OnClickListener {
 			finish();
 		}
 		if (v.getId() == R.id.Profile5) {
-			SharedPreferences prefs = getApplicationContext()
-					.getSharedPreferences(Api.PREFS_NAME, Context.MODE_PRIVATE);
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 			final SharedPreferences prefs2 = getApplicationContext()
 					.getSharedPreferences(Api.PREF_PROFILE5,
 							Context.MODE_PRIVATE);
@@ -435,13 +428,13 @@ public class WidgetActivity extends Activity implements OnClickListener {
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(ctx);
 		SharedPreferences.Editor editor = prefs.edit();
-		boolean ipv6support = ctx.getSharedPreferences(Api.PREFS_NAME, 0)
+		boolean ipv6support = prefs
 				.getBoolean(Api.PREF_IP6TABLES, false);
-		boolean logsupport = ctx.getSharedPreferences(Api.PREFS_NAME, 0)
+		boolean logsupport = prefs
 				.getBoolean(Api.PREF_LOGENABLED, false);
-		boolean notifysupport = ctx.getSharedPreferences(Api.PREFS_NAME, 0)
+		boolean notifysupport = prefs
 				.getBoolean(Api.PREF_NOTIFY, false);
-		boolean taskerenabled = ctx.getSharedPreferences(Api.PREFS_NAME, 0)
+		boolean taskerenabled = prefs
 				.getBoolean(Api.PREF_TASKERNOTIFY, false);
 		if (ipv6support) {
 			editor.putBoolean("ipv6enabled", true);
