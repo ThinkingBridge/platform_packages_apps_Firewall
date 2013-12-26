@@ -23,7 +23,6 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.res.Configuration;
-import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -36,6 +35,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+
 
 /**
  * @author Clark Scheff
@@ -63,7 +64,28 @@ public class FirewallActivity extends Activity {
 		// Set the list's click listener
 		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 		mDrawerList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        setupNavigationDrawer();
+		mDrawerToggle = new ActionBarDrawerToggle(
+	                this,
+	                mDrawerLayout,
+	                R.drawable.ic_drawer_holo_dark,
+	                0,
+	                0
+	                ) {
+
+	            /** Called when a drawer has settled in a completely closed state. */
+	            public void onDrawerClosed(View view) {
+	                getActionBar().setTitle(mTitle);
+	            }
+
+	            /** Called when a drawer has settled in a completely open state. */
+	            public void onDrawerOpened(View drawerView) {
+	            }
+	        };
+	
+	        // Set the drawer toggle as the DrawerListener
+	        mDrawerLayout.setDrawerListener(mDrawerToggle);
+	        getActionBar().setDisplayHomeAsUpEnabled(true);
+	        getActionBar().setHomeButtonEnabled(true);
 
         if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("first_run", true)) {
             mDrawerLayout.openDrawer(mDrawerList);
@@ -89,37 +111,6 @@ public class FirewallActivity extends Activity {
 		mDrawerList.setAdapter(new NavigationAdapter());
 		selectItem(0);
 	}
-
-    private void setupNavigationDrawer() {
-        TypedArray a = getTheme().obtainStyledAttributes(
-                new int[] {
-                        com.android.internal.R.attr.ic_drawer });
-        int drawerIconRes = a.getResourceId(0, 0);
-        a.recycle();
-        mDrawerToggle = new ActionBarDrawerToggle(
-                this,
-                mDrawerLayout,
-                drawerIconRes,
-                0,
-                0
-        ) {
-
-            /** Called when a drawer has settled in a completely closed state. */
-            public void onDrawerClosed(View view) {
-                getActionBar().setTitle(mTitle);
-            }
-
-            /** Called when a drawer has settled in a completely open state. */
-            public void onDrawerOpened(View drawerView) {
-            }
-        };
-
-        // Set the drawer toggle as the DrawerListener
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
-
-    }
 	
 	private class DrawerItemClickListener implements ListView.OnItemClickListener {
 	    @Override

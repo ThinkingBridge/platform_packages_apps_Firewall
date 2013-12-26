@@ -43,7 +43,7 @@ import java.util.StringTokenizer;
 import org.chameleonos.firewall.R;
 
 import eu.chainfire.libsuperuser.Shell;
-import eu.chainfire.libsuperuser.Shell.INVOKE;
+import eu.chainfire.libsuperuser.Shell.SU;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -1699,7 +1699,7 @@ public final class Api {
 			try {
 				if (script != null && script.length() > 0) {
 					// apply the rules
-					List<String> rules = Shell.INVOKE.run(commands);
+					List<String> rules = Shell.SU.run(commands);
 					if (rules != null && rules.size() > 0) {
 						for (String script2 : rules) {
 							resources.append(script2);
