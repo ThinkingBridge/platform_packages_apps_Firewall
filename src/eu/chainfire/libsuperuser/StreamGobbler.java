@@ -22,7 +22,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 
-import org.chameleonos.firewall.BuildConfig;
+import org.thinkingbridge.firewall.BuildConfig;
 
 /**
  * Thread utility class continuously reading from an InputStream

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.chameleonos.firewall"
+    package="org.thinkingbridge.firewall"
     android:sharedUserId="android.uid.system"
     android:versionCode="225"
     android:versionName="2.2.5" >
 
     <uses-sdk
         android:minSdkVersion="17"
-        android:targetSdkVersion="17" />
+        android:targetSdkVersion="19" />
     <!--
     Boot completed permission is for applying iptables/ip6tables after a reboot.
     iptables/ip6tables is not persistent so a reboot wipes it out
@@ -97,8 +97,8 @@
 
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="org.chameleonos.firewall.intent.action.STATUS_CHANGED" />
-                <action android:name="org.chameleonos.firewall.intent.action.TOGGLE_REQUEST" />
+                <action android:name="org.thinkingbridge.firewall.intent.action.STATUS_CHANGED" />
+                <action android:name="org.thinkingbridge.firewall.intent.action.TOGGLE_REQUEST" />
             </intent-filter>
         </receiver>
         <receiver
@@ -110,8 +110,8 @@
 
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="org.chameleonos.firewall.intent.action.STATUS_CHANGED" />
-                <action android:name="org.chameleonos.firewall.intent.action.TOGGLE_REQUEST" />
+                <action android:name="org.thinkingbridge.firewall.intent.action.STATUS_CHANGED" />
+                <action android:name="org.thinkingbridge.firewall.intent.action.TOGGLE_REQUEST" />
             </intent-filter>
         </receiver>
 

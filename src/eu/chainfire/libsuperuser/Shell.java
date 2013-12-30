@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit;
 import android.os.Handler;
 import android.os.Looper;
 
-import org.chameleonos.firewall.BuildConfig;
+import org.thinkingbridge.firewall.BuildConfig;
 import eu.chainfire.libsuperuser.StreamGobbler.OnLineListener;
 
 /**
